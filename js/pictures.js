@@ -1,6 +1,6 @@
 'use strict';
 
-var PictureParameter = {
+var PictureGeneratorParameters = {
   COMMENTS: [
     'Всё отлично!',
     'В целом всё неплохо. Но не всё.',
@@ -25,7 +25,7 @@ var PictureParameter = {
   FILE_EXTENSION: '.jpg'
 };
 
-var Picture = {
+var PreviewSelectors = {
   TEMPLATE: '#picture',
   LIST: '.pictures',
   ITEM: '.picture',
@@ -34,8 +34,7 @@ var Picture = {
   LIKES: '.picture__likes'
 };
 
-var BigPicture = {
-  NUMBER: 0,
+var PictureSelectors = {
   WINDOW: '.big-picture',
   IMAGE: '.big-picture__img',
   LIKES: '.likes-count',
@@ -43,86 +42,93 @@ var BigPicture = {
   DESCRIPTION: '.social__caption'
 };
 
-var Comments = {
-  LIST: '.social__comments',
-  ITEM: 'social__comment',
-  TEXT: 'social__text',
-  AVATAR: 'social__picture',
+var CommentParameters = {
   AVATAR_COUNT: 6,
   AVATAR_URL: 'img/avatar-',
   AVATAR_EXTENSION: '.svg',
   AVATAR_ALT: 'Аватар комментатора фотографии',
-  AVATAR_SIZE: 35,
+  AVATAR_SIZE: 35
+};
+
+var CommentSelectors = {
+  LIST: '.social__comments',
+  ITEM: 'social__comment',
+  TEXT: 'social__text',
+  AVATAR: 'social__picture',
   COUNT: '.social__comment-count',
   LOADER: '.comments-loader'
 };
 
-var Class = {
+var HiddenClassNames = {
   HIDDEN: 'hidden',
   VISUALLY_HIDDEN: 'visually-hidden'
 };
 
-var pictureTemlate = document.querySelector(Picture.TEMPLATE).content.querySelector(Picture.ITEM);
-var pictureList = document.querySelector(Picture.LIST);
-var bigPicture = document.querySelector(BigPicture.WINDOW);
+var previewTemlate = document.querySelector(PreviewSelectors.TEMPLATE).content.querySelector(PreviewSelectors.ITEM);
+var previewList = document.querySelector(PreviewSelectors.LIST);
+var pictureWindow = document.querySelector(PictureSelectors.WINDOW);
 
-var getRandomInt = function (min, max) {
+var getRandomFromInterval = function (min, max) {
+  if (max === undefined) {
+    max = min;
+    min = 0;
+  }
   return Math.floor(Math.random() * (max - min)) + min;
 };
 
-var getValue = function (arr) {
-  return arr[getRandomInt(0, arr.length)];
+var getRandomElement = function (arr) {
+  return arr[getRandomFromInterval(arr.length)];
 };
 
-var createPicture = function (number, commentsArr, descriptionsArr) {
+var createPictureObject = function (index, comments, descriptions) {
   var picture = {};
 
-  picture.url = PictureParameter.FILE_DIR + (number + 1) + PictureParameter.FILE_EXTENSION;
-  picture.likes = getRandomInt(PictureParameter.LIKES_MIN, PictureParameter.LIKES_MAX + 1);
+  picture.url = PictureGeneratorParameters.FILE_DIR + (index + 1) + PictureGeneratorParameters.FILE_EXTENSION;
+  picture.likes = getRandomFromInterval(PictureGeneratorParameters.LIKES_MIN, PictureGeneratorParameters.LIKES_MAX + 1);
 
   picture.comments = [];
-  var commentsCount = getRandomInt(0, PictureParameter.COMMENTS_COUNT__MAX + 1);
+  var commentsCount = getRandomFromInterval(PictureGeneratorParameters.COMMENTS_COUNT__MAX + 1);
   for (var i = 0; i < commentsCount; i++) {
     if (Math.random() > 0.5) {
-      picture.comments.push(getValue(commentsArr) + ' ' + getValue(commentsArr));
+      picture.comments.push(getRandomElement(comments) + ' ' + getRandomElement(comments));
     } else {
-      picture.comments.push(getValue(commentsArr));
+      picture.comments.push(getRandomElement(comments));
     }
   }
 
-  picture.description = getValue(descriptionsArr);
+  picture.description = getRandomElement(descriptions);
 
   return picture;
 };
 
-var addPictures = function (count) {
-  var picturesArr = [];
+var createPicturesArray = function (count) {
+  var pictures = [];
 
   for (var i = 0; i < count; i++) {
-    picturesArr.push(createPicture(i, PictureParameter.COMMENTS, PictureParameter.DESCRIPTIONS));
+    pictures.push(createPictureObject(i, PictureGeneratorParameters.COMMENTS, PictureGeneratorParameters.DESCRIPTIONS));
   }
 
-  return picturesArr;
+  return pictures;
 };
 
-var renderPicture = function (picture) {
-  var pictureElement = pictureTemlate.cloneNode(true);
+var renderPreview = function (picture) {
+  var previewElement = previewTemlate.cloneNode(true);
 
-  pictureElement.querySelector(Picture.IMAGE).src = picture.url;
-  pictureElement.querySelector(Picture.LIKES).textContent = picture.likes;
-  pictureElement.querySelector(Picture.COMMENTS).textContent = picture.comments.length;
+  previewElement.querySelector(PreviewSelectors.IMAGE).src = picture.url;
+  previewElement.querySelector(PreviewSelectors.LIKES).textContent = picture.likes;
+  previewElement.querySelector(PreviewSelectors.COMMENTS).textContent = picture.comments.length;
 
-  return pictureElement;
+  return previewElement;
 };
 
-var createPicturesFragment = function (picturesArr) {
-  var picturesFragment = document.createDocumentFragment();
+var createPreviewsFragment = function (picturesArr) {
+  var previewFragment = document.createDocumentFragment();
 
   for (var i = 0; i < picturesArr.length; i++) {
-    picturesFragment.appendChild(renderPicture(picturesArr[i]));
+    previewFragment.appendChild(renderPreview(picturesArr[i]));
   }
 
-  return picturesFragment;
+  return previewFragment;
 };
 
 var renderComment = function (commentText) {
@@ -130,27 +136,27 @@ var renderComment = function (commentText) {
   var avatar = document.createElement('img');
   var text = document.createElement('p');
 
-  comment.classList.add(Comments.ITEM);
+  comment.classList.add(CommentSelectors.ITEM);
 
-  avatar.classList.add(Comments.AVATAR);
-  avatar.src = Comments.AVATAR_URL + getRandomInt(1, Comments.AVATAR_COUNT + 1) + Comments.AVATAR_EXTENSION;
-  avatar.alt = Comments.AVATAR_ALT;
-  avatar.width = Comments.AVATAR_SIZE;
-  avatar.height = Comments.AVATAR_SIZE;
+  avatar.classList.add(CommentSelectors.AVATAR);
+  avatar.src = CommentParameters.AVATAR_URL + getRandomFromInterval(1, CommentParameters.AVATAR_COUNT + 1) + CommentParameters.AVATAR_EXTENSION;
+  avatar.alt = CommentParameters.AVATAR_ALT;
+  avatar.width = CommentParameters.AVATAR_SIZE;
+  avatar.height = CommentParameters.AVATAR_SIZE;
   comment.appendChild(avatar);
 
-  text.classList.add(Comments.TEXT);
+  text.classList.add(CommentSelectors.TEXT);
   text.textContent = commentText;
   comment.appendChild(text);
 
   return comment;
 };
 
-var createCommentsFragment = function (commentsArr) {
+var createCommentsFragment = function (comments) {
   var commentsFragment = document.createDocumentFragment();
 
-  for (var i = 0; i < commentsArr.length; i++) {
-    commentsFragment.appendChild(renderComment(commentsArr[i]));
+  for (var i = 0; i < comments.length; i++) {
+    commentsFragment.appendChild(renderComment(comments[i]));
   }
 
   return commentsFragment;
@@ -162,18 +168,18 @@ var removeChildren = function (element) {
   }
 };
 
-var renderBigPicture = function (pictureData) {
-  bigPicture.querySelector(BigPicture.IMAGE).querySelector('img').src = pictureData.url;
-  bigPicture.querySelector(BigPicture.LIKES).textContent = pictureData.likes;
-  bigPicture.querySelector(BigPicture.COMMENTS).textContent = pictureData.comments.length;
-  bigPicture.querySelector(BigPicture.DESCRIPTION).textContent = pictureData.description;
-  removeChildren(bigPicture.querySelector(Comments.LIST));
-  bigPicture.querySelector(Comments.LIST).appendChild(createCommentsFragment(pictureData.comments));
+var renderPicture = function (pictureObject) {
+  pictureWindow.querySelector(PictureSelectors.IMAGE).querySelector('img').src = pictureObject.url;
+  pictureWindow.querySelector(PictureSelectors.LIKES).textContent = pictureObject.likes;
+  pictureWindow.querySelector(PictureSelectors.COMMENTS).textContent = pictureObject.comments.length;
+  pictureWindow.querySelector(PictureSelectors.DESCRIPTION).textContent = pictureObject.description;
+  removeChildren(pictureWindow.querySelector(CommentSelectors.LIST));
+  pictureWindow.querySelector(CommentSelectors.LIST).appendChild(createCommentsFragment(pictureObject.comments));
 };
 
-pictureList.appendChild(createPicturesFragment(addPictures(PictureParameter.COUNT)));
+previewList.appendChild(createPreviewsFragment(createPicturesArray(PictureGeneratorParameters.COUNT)));
 
-renderBigPicture(addPictures(PictureParameter.COUNT)[BigPicture.NUMBER]);
-bigPicture.querySelector(Comments.COUNT).classList.add(Class.VISUALLY_HIDDEN);
-bigPicture.querySelector(Comments.LOADER).classList.add(Class.VISUALLY_HIDDEN);
-bigPicture.classList.remove(Class.HIDDEN);
+renderPicture(createPicturesArray(PictureGeneratorParameters.COUNT)[0]);
+pictureWindow.querySelector(CommentSelectors.COUNT).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
+pictureWindow.querySelector(CommentSelectors.LOADER).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
+pictureWindow.classList.remove(HiddenClassNames.HIDDEN);
