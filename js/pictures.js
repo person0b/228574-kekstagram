@@ -68,7 +68,7 @@ var previewTemlate = document.querySelector(PreviewSelectors.TEMPLATE).content.q
 var previewList = document.querySelector(PreviewSelectors.LIST);
 var pictureWindow = document.querySelector(PictureSelectors.WINDOW);
 
-var getRandomFromInterval = function (min, max) {
+var getRandomInt = function (min, max) {
   if (max === undefined) {
     max = min;
     min = 0;
@@ -77,17 +77,17 @@ var getRandomFromInterval = function (min, max) {
 };
 
 var getRandomElement = function (arr) {
-  return arr[getRandomFromInterval(arr.length)];
+  return arr[getRandomInt(arr.length)];
 };
 
 var createPictureObject = function (index, comments, descriptions) {
   var picture = {};
 
   picture.url = PictureGeneratorParameters.FILE_DIR + (index + 1) + PictureGeneratorParameters.FILE_EXTENSION;
-  picture.likes = getRandomFromInterval(PictureGeneratorParameters.LIKES_MIN, PictureGeneratorParameters.LIKES_MAX + 1);
+  picture.likes = getRandomInt(PictureGeneratorParameters.LIKES_MIN, PictureGeneratorParameters.LIKES_MAX + 1);
 
   picture.comments = [];
-  var commentsCount = getRandomFromInterval(PictureGeneratorParameters.COMMENTS_COUNT__MAX + 1);
+  var commentsCount = getRandomInt(PictureGeneratorParameters.COMMENTS_COUNT__MAX + 1);
   for (var i = 0; i < commentsCount; i++) {
     if (Math.random() > 0.5) {
       picture.comments.push(getRandomElement(comments) + ' ' + getRandomElement(comments));
@@ -139,7 +139,7 @@ var renderComment = function (commentText) {
   comment.classList.add(CommentSelectors.ITEM);
 
   avatar.classList.add(CommentSelectors.AVATAR);
-  avatar.src = CommentParameters.AVATAR_URL + getRandomFromInterval(1, CommentParameters.AVATAR_COUNT + 1) + CommentParameters.AVATAR_EXTENSION;
+  avatar.src = CommentParameters.AVATAR_URL + getRandomInt(1, CommentParameters.AVATAR_COUNT + 1) + CommentParameters.AVATAR_EXTENSION;
   avatar.alt = CommentParameters.AVATAR_ALT;
   avatar.width = CommentParameters.AVATAR_SIZE;
   avatar.height = CommentParameters.AVATAR_SIZE;
