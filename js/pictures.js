@@ -121,11 +121,11 @@ var renderPreview = function (picture) {
   return previewElement;
 };
 
-var createPreviewsFragment = function (picturesArr) {
+var createPreviewsFragment = function (pictures) {
   var previewFragment = document.createDocumentFragment();
 
-  for (var i = 0; i < picturesArr.length; i++) {
-    previewFragment.appendChild(renderPreview(picturesArr[i]));
+  for (var i = 0; i < pictures.length; i++) {
+    previewFragment.appendChild(renderPreview(pictures[i]));
   }
 
   return previewFragment;
@@ -177,9 +177,11 @@ var renderPicture = function (pictureObject) {
   pictureWindow.querySelector(CommentSelectors.LIST).appendChild(createCommentsFragment(pictureObject.comments));
 };
 
-previewList.appendChild(createPreviewsFragment(createPicturesArray(PictureGeneratorParameters.COUNT)));
+var picturesArray = createPicturesArray(PictureGeneratorParameters.COUNT);
 
-renderPicture(createPicturesArray(PictureGeneratorParameters.COUNT)[0]);
+previewList.appendChild(createPreviewsFragment(picturesArray));
+
+renderPicture(picturesArray[0]);
 pictureWindow.querySelector(CommentSelectors.COUNT).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
 pictureWindow.querySelector(CommentSelectors.LOADER).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
 pictureWindow.classList.remove(HiddenClassNames.HIDDEN);
