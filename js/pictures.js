@@ -184,4 +184,3 @@ previewList.appendChild(createPreviewsFragment(picturesArray));
 renderPicture(picturesArray[0]);
 pictureWindow.querySelector(CommentSelectors.COUNT).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
 pictureWindow.querySelector(CommentSelectors.LOADER).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
-pictureWindow.classList.remove(HiddenClassNames.HIDDEN);
