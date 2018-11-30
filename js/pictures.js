@@ -186,11 +186,10 @@ var renderPicture = function (pictureObject) {
   pictureWindow.querySelector(CommentSelectors.LIST).appendChild(createCommentsFragment(pictureObject.comments));
 };
 
-var picturesArray = createPicturesArray(PictureGeneratorParameters.COUNT);
+var pictures = createPicturesArray(PictureGeneratorParameters.COUNT);
 
-previewList.appendChild(createPreviewsFragment(picturesArray));
+previewList.appendChild(createPreviewsFragment(pictures));
 
-// renderPicture(picturesArray[0]);
 pictureWindow.querySelector(CommentSelectors.COUNT).classList.add(ClassNames.VISUALLY_HIDDEN);
 pictureWindow.querySelector(CommentSelectors.LOADER).classList.add(ClassNames.VISUALLY_HIDDEN);
 
@@ -228,8 +227,8 @@ var pictureClose = function () {
   document.removeEventListener('keydown', onPictureEscPress);
 };
 
-for (var i = 0; i < picturesArray.length; i++) {
-  onPreviewClick(previews[i], picturesArray[i]);
+for (var i = 0; i < pictures.length; i++) {
+  onPreviewClick(previews[i], pictures[i]);
 }
 
 var onPictureEscPress = function (evt) {
