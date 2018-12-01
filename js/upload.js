@@ -26,6 +26,12 @@ var HiddenClassNames = {
   VISUALLY_HIDDEN: 'visually-hidden'
 };
 
+var ScaleParameters = {
+  MIN: 25,
+  MAX: 100,
+  STEP: 25
+};
+
 var FILTERS = [
   {
     name: 'none',
@@ -149,18 +155,16 @@ var onCloseEditorButtonEnterPress = function (evt) {
 
 var onScaleBiggerButtonClick = function () {
   var currentPercent = parseInt(scaleValue.value, 10);
-  if (currentPercent !== 100) {
-    scaleValueChange(currentPercent + 25);
-    previewImage.style.transform = 'scale(' + parseInt(scaleValue.value, 10) / 100 + ')';
-  }
+  currentPercent = Math.min(ScaleParameters.MAX, currentPercent + ScaleParameters.STEP);
+  scaleValueChange(currentPercent);
+  previewImage.style.transform = 'scale(' + (currentPercent / 100).toString() + ')';
 };
 
 var onScaleSmallerButtonClick = function () {
   var currentPercent = parseInt(scaleValue.value, 10);
-  if (currentPercent !== 25) {
-    scaleValueChange(currentPercent - 25);
-    previewImage.style.transform = 'scale(' + parseInt(scaleValue.value, 10) / 100 + ')';
-  }
+  currentPercent = Math.max(ScaleParameters.MIN, currentPercent - ScaleParameters.STEP);
+  scaleValueChange(currentPercent);
+  previewImage.style.transform = 'scale(' + (currentPercent / 100).toString() + ')';
 };
 
 var onEffectPinMouseup = function (evt) {
@@ -193,9 +197,7 @@ var editorClose = function () {
   effectPin.removeEventListener('mouseup', onEffectPinMouseup);
 };
 
-uploadButton.addEventListener('change', function () {
-  editorOpen();
-});
+uploadButton.addEventListener('change', editorOpen);
 
 for (var i = 0; i < filterButtons.length; i++) {
   filterChange(filterButtons[i], FILTERS[i]);

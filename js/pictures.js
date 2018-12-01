@@ -196,18 +196,11 @@ pictureWindow.querySelector(CommentSelectors.LOADER).classList.add(ClassNames.VI
 var previews = document.querySelectorAll(PreviewSelectors.ITEM);
 var pictureCloseButton = pictureWindow.querySelector(PictureSelectors.CLOSE);
 
-var onPreviewClick = function (preview, photo) {
+var addPreviewClickHandler = function (preview, photo) {
   preview.addEventListener('click', function (evt) {
     evt.preventDefault();
     renderPicture(photo);
     pictureOpen();
-  });
-
-  preview.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === KeyCode.ENTER) {
-      renderPicture(photo);
-      pictureOpen();
-    }
   });
 };
 
@@ -227,12 +220,12 @@ var pictureClose = function () {
   document.removeEventListener('keydown', onPictureEscPress);
 };
 
-for (var i = 0; i < pictures.length; i++) {
-  onPreviewClick(previews[i], pictures[i]);
-}
-
 var onPictureEscPress = function (evt) {
   if (evt.keyCode === KeyCode.ESC) {
     pictureClose();
   }
 };
+
+for (var i = 0; i < pictures.length; i++) {
+  addPreviewClickHandler(previews[i], pictures[i]);
+}
