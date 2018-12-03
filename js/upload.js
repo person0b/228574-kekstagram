@@ -123,12 +123,14 @@ var scaleValueChange = function (percent) {
 };
 
 var addFilterButtonClickHandler = function (button, filter) {
-  button.addEventListener('click', function () {
+  var activateFilter = function () {
     filterPreview.classList.remove(filterPreview.classList[1]);
     filterPreview.classList.add(filter.class);
     effectValue.value = EFFECT_DEFAULT_VALUE;
     changeFilterStyle(effectValue.value);
-  });
+  };
+
+  button.addEventListener('click', activateFilter);
 };
 
 var changeFilterStyle = function (value) {

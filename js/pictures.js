@@ -197,19 +197,17 @@ var previews = document.querySelectorAll(PreviewSelectors.ITEM);
 var pictureCloseButton = pictureWindow.querySelector(PictureSelectors.CLOSE);
 
 var addPreviewClickHandler = function (preview, photo) {
-  preview.addEventListener('click', function (evt) {
+  var pictureOpen = function (evt) {
     evt.preventDefault();
     renderPicture(photo);
-    pictureOpen();
-  });
-};
+    pictureWindow.classList.remove(ClassNames.HIDDEN);
+    BODY.classList.add(ClassNames.MODAL_OPEN);
 
-var pictureOpen = function () {
-  pictureWindow.classList.remove(ClassNames.HIDDEN);
-  BODY.classList.add(ClassNames.MODAL_OPEN);
+    pictureCloseButton.addEventListener('click', pictureClose);
+    document.addEventListener('keydown', onPictureEscPress);
+  };
 
-  pictureCloseButton.addEventListener('click', pictureClose);
-  document.addEventListener('keydown', onPictureEscPress);
+  preview.addEventListener('click', pictureOpen);
 };
 
 var pictureClose = function () {
