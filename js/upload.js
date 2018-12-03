@@ -87,6 +87,8 @@ var FILTERS = [
   }
 ];
 
+var EFFECT_DEFAULT_VALUE = 100;
+
 var editor = document.querySelector(UploadSelectors.EDITOR);
 var uploadButton = document.querySelector(UploadSelectors.FILE_UPLOAD);
 var closeEditorButton = editor.querySelector(UploadSelectors.CLOSE);
@@ -95,7 +97,7 @@ var scaleValue = editor.querySelector(UploadSelectors.SCALE_VALUE);
 var scaleSmallerButton = editor.querySelector(UploadSelectors.SCALE_SMALLER);
 var scaleBiggerButton = editor.querySelector(UploadSelectors.SCALE_BIGGER);
 
-var effectField = editor.querySelector(UploadSelectors.EFFECT_FIELD);
+var effectSlider = editor.querySelector(UploadSelectors.EFFECT_FIELD);
 var effectPin = editor.querySelector(UploadSelectors.EFFECT_PIN);
 var effectLine = editor.querySelector(UploadSelectors.EFFECT_LINE);
 var effectValue = editor.querySelector(UploadSelectors.EFFECT_VALUE);
@@ -120,11 +122,11 @@ var scaleValueChange = function (percent) {
   scaleValue.value = percent.toString() + '%';
 };
 
-var filterChange = function (button, filter) {
+var addFilterButtonClickHandler = function (button, filter) {
   button.addEventListener('click', function () {
     filterPreview.classList.remove(filterPreview.classList[1]);
     filterPreview.classList.add(filter.class);
-    effectValue.value = 100;
+    effectValue.value = EFFECT_DEFAULT_VALUE;
     changeFilterStyle(effectValue.value);
   });
 };
@@ -133,10 +135,10 @@ var changeFilterStyle = function (value) {
   for (var i = 0; i < FILTERS.length; i++) {
     if (filterPreview.classList.contains(FILTERS[0].class)) {
       filterPreview.style.filter = FILTERS[0].getFilter(value);
-      effectField.classList.add(HiddenClassNames.HIDDEN);
+      effectSlider.classList.add(HiddenClassNames.HIDDEN);
     } else if (filterPreview.classList.contains(FILTERS[i].class)) {
       filterPreview.style.filter = FILTERS[i].getFilter(value);
-      effectField.classList.remove(HiddenClassNames.HIDDEN);
+      effectSlider.classList.remove(HiddenClassNames.HIDDEN);
     }
   }
 };
@@ -174,8 +176,8 @@ var onEffectPinMouseup = function (evt) {
 
 var editorOpen = function () {
   editor.classList.remove(HiddenClassNames.HIDDEN);
-  effectField.classList.add(HiddenClassNames.HIDDEN);
-  scaleValueChange(100);
+  effectSlider.classList.add(HiddenClassNames.HIDDEN);
+  scaleValueChange(ScaleParameters.MAX);
 
   document.addEventListener('keydown', onEditorEscPress);
   closeEditorButton.addEventListener('click', editorClose);
@@ -200,5 +202,5 @@ var editorClose = function () {
 uploadButton.addEventListener('change', editorOpen);
 
 for (var i = 0; i < filterButtons.length; i++) {
-  filterChange(filterButtons[i], FILTERS[i]);
+  addFilterButtonClickHandler(filterButtons[i], FILTERS[i]);
 }
