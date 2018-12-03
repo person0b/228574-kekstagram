@@ -25,6 +25,8 @@ var PictureGeneratorParameters = {
   FILE_EXTENSION: '.jpg'
 };
 
+var BODY = document.querySelector('body');
+
 var PreviewSelectors = {
   TEMPLATE: '#picture',
   LIST: '.pictures',
@@ -36,6 +38,7 @@ var PreviewSelectors = {
 
 var PictureSelectors = {
   WINDOW: '.big-picture',
+  CLOSE: '.big-picture__cancel',
   IMAGE: '.big-picture__img',
   LIKES: '.likes-count',
   COMMENTS: '.comments-count',
@@ -59,9 +62,15 @@ var CommentSelectors = {
   LOADER: '.comments-loader'
 };
 
-var HiddenClassNames = {
+var ClassNames = {
   HIDDEN: 'hidden',
-  VISUALLY_HIDDEN: 'visually-hidden'
+  VISUALLY_HIDDEN: 'visually-hidden',
+  MODAL_OPEN: 'modal-open'
+};
+
+var KeyCode = {
+  ESC: 27,
+  ENTER: 13
 };
 
 var previewTemlate = document.querySelector(PreviewSelectors.TEMPLATE).content.querySelector(PreviewSelectors.ITEM);
@@ -177,11 +186,44 @@ var renderPicture = function (pictureObject) {
   pictureWindow.querySelector(CommentSelectors.LIST).appendChild(createCommentsFragment(pictureObject.comments));
 };
 
-var picturesArray = createPicturesArray(PictureGeneratorParameters.COUNT);
+var pictures = createPicturesArray(PictureGeneratorParameters.COUNT);
 
-previewList.appendChild(createPreviewsFragment(picturesArray));
+previewList.appendChild(createPreviewsFragment(pictures));
 
-renderPicture(picturesArray[0]);
-pictureWindow.querySelector(CommentSelectors.COUNT).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
-pictureWindow.querySelector(CommentSelectors.LOADER).classList.add(HiddenClassNames.VISUALLY_HIDDEN);
-pictureWindow.classList.remove(HiddenClassNames.HIDDEN);
+pictureWindow.querySelector(CommentSelectors.COUNT).classList.add(ClassNames.VISUALLY_HIDDEN);
+pictureWindow.querySelector(CommentSelectors.LOADER).classList.add(ClassNames.VISUALLY_HIDDEN);
+
+var previews = document.querySelectorAll(PreviewSelectors.ITEM);
+var pictureCloseButton = pictureWindow.querySelector(PictureSelectors.CLOSE);
+
+var addPreviewClickHandler = function (preview, photo) {
+  var pictureOpen = function (evt) {
+    evt.preventDefault();
+    renderPicture(photo);
+    pictureWindow.classList.remove(ClassNames.HIDDEN);
+    BODY.classList.add(ClassNames.MODAL_OPEN);
+
+    pictureCloseButton.addEventListener('click', pictureClose);
+    document.addEventListener('keydown', onPictureEscPress);
+  };
+
+  preview.addEventListener('click', pictureOpen);
+};
+
+var pictureClose = function () {
+  pictureWindow.classList.add(ClassNames.HIDDEN);
+  BODY.classList.remove(ClassNames.MODAL_OPEN);
+
+  pictureCloseButton.removeEventListener('click', pictureClose);
+  document.removeEventListener('keydown', onPictureEscPress);
+};
+
+var onPictureEscPress = function (evt) {
+  if (evt.keyCode === KeyCode.ESC) {
+    pictureClose();
+  }
+};
+
+for (var i = 0; i < pictures.length; i++) {
+  addPreviewClickHandler(previews[i], pictures[i]);
+}
