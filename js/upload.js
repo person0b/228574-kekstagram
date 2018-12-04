@@ -18,7 +18,9 @@ var UploadSelectors = {
   PREVIEW_IMAGE: '.img-upload__preview img',
   SCALE_VALUE: '.scale__control--value',
   SCALE_SMALLER: '.scale__control--smaller',
-  SCALE_BIGGER: '.scale__control--bigger'
+  SCALE_BIGGER: '.scale__control--bigger',
+  HASHTAGS_INPUT: '.text__hashtags',
+  COMMENTS_INPUT: '.text__description'
 };
 
 var HiddenClassNames = {
@@ -89,6 +91,27 @@ var FILTERS = [
 
 var EFFECT_DEFAULT_VALUE = 100;
 
+var HashtagsParameters = {
+  MAX_LENGTH: 20,
+  MAX_COUNT: 5
+};
+
+var Symbols = {
+  SPACE: ' ',
+  HASH: '#',
+  DOT: '.',
+  COMMA: ','
+};
+
+var ValidityAlert = {
+  NO_HASH: 'Хэш-тег должен начинаться с символа # (решётка)',
+  LENGTH_MAX: 'Максимальная длина одного хэш-тега ' + HashtagsParameters.MAX_LENGTH.toString() + ' символов, включая решётку;',
+  LENGTH_MIN: 'Хеш-тег не может состоять только из одной решётки',
+  SPLIT: 'Хэш-теги должны разделяться пробелами',
+  COUNT: 'Нельзя указать больше пяти хэш-тегов',
+  DUPLICATE: 'Один и тот же хэш-тег не может быть использован дважды, теги нечувствительны к регистру'
+};
+
 var editor = document.querySelector(UploadSelectors.EDITOR);
 var uploadButton = document.querySelector(UploadSelectors.FILE_UPLOAD);
 var closeEditorButton = editor.querySelector(UploadSelectors.CLOSE);
@@ -106,6 +129,9 @@ var filterButtons = editor.querySelectorAll(UploadSelectors.FILTER_BUTTON);
 
 var filterPreview = editor.querySelector(UploadSelectors.FILTER_PREVIEW);
 var previewImage = editor.querySelector(UploadSelectors.PREVIEW_IMAGE);
+
+var hashtagsInput = editor.querySelector(UploadSelectors.HASHTAGS_INPUT);
+var commentsInput = editor.querySelector(UploadSelectors.COMMENTS_INPUT);
 
 var getFilterValue = function (min, max, percent) {
   return ((max - min) / 100 * percent + min).toString();
@@ -128,6 +154,7 @@ var addFilterButtonClickHandler = function (button, filter) {
     filterPreview.classList.add(filter.class);
     effectValue.value = EFFECT_DEFAULT_VALUE;
     changeFilterStyle(effectValue.value);
+    button.checked = true;
   };
 
   button.addEventListener('click', activateFilter);
@@ -145,8 +172,17 @@ var changeFilterStyle = function (value) {
   }
 };
 
+var resetValue = function () {
+  scaleValueChange(ScaleParameters.MAX);
+  filterButtons[0].checked = true;
+  effectValue.value = EFFECT_DEFAULT_VALUE;
+  effectSlider.classList.add(HiddenClassNames.HIDDEN);
+  hashtagsInput.value = null;
+  commentsInput.value = null;
+};
+
 var onEditorEscPress = function (evt) {
-  if (evt.keyCode === KeyCode.ESC) {
+  if (evt.keyCode === KeyCode.ESC && document.activeElement !== hashtagsInput && document.activeElement !== commentsInput) {
     editorClose();
   }
 };
@@ -176,10 +212,38 @@ var onEffectPinMouseup = function (evt) {
   changeFilterStyle(effectValue.value);
 };
 
+var onHashtagsInputValidity = function (evt) {
+  var target = evt.target;
+  var string = target.value;
+  var hashtags = string.split(Symbols.SPACE);
+
+  for (var i = 0; i < hashtags.length; i++) {
+    if (!hashtags[i].startsWith(Symbols.HASH)) {
+      target.setCustomValidity(ValidityAlert.NO_HASH);
+    } else if (hashtags[i].length === 1) {
+      target.setCustomValidity(ValidityAlert.LENGTH_MIN);
+    } else if (hashtags[i].includes(Symbols.DOT) || hashtags[i].includes(Symbols.COMMA)) {
+      target.setCustomValidity(ValidityAlert.SPLIT);
+    } else if (hashtags[i].length > HashtagsParameters.MAX_LENGTH) {
+      target.setCustomValidity(ValidityAlert.LENGTH_MAX);
+    }
+
+    for (var j = i + 1; j < hashtags.length; j++) {
+      if (hashtags[i].toLowerCase() === hashtags[j].toLowerCase()) {
+        target.setCustomValidity(ValidityAlert.DUPLICATE);
+      }
+    }
+  }
+
+  if (hashtags.length > HashtagsParameters.MAX_COUNT) {
+    target.setCustomValidity(ValidityAlert.COUNT);
+  }
+};
+
 var editorOpen = function () {
+  resetValue();
+
   editor.classList.remove(HiddenClassNames.HIDDEN);
-  effectSlider.classList.add(HiddenClassNames.HIDDEN);
-  scaleValueChange(ScaleParameters.MAX);
 
   document.addEventListener('keydown', onEditorEscPress);
   closeEditorButton.addEventListener('click', editorClose);
@@ -187,9 +251,12 @@ var editorOpen = function () {
   scaleBiggerButton.addEventListener('click', onScaleBiggerButtonClick);
   scaleSmallerButton.addEventListener('click', onScaleSmallerButtonClick);
   effectPin.addEventListener('mouseup', onEffectPinMouseup);
+  hashtagsInput.addEventListener('input', onHashtagsInputValidity);
 };
 
 var editorClose = function () {
+  resetValue();
+
   editor.classList.add(HiddenClassNames.HIDDEN);
   uploadButton.value = null;
 
@@ -199,6 +266,7 @@ var editorClose = function () {
   scaleBiggerButton.removeEventListener('click', onScaleBiggerButtonClick);
   scaleSmallerButton.removeEventListener('click', onScaleSmallerButtonClick);
   effectPin.removeEventListener('mouseup', onEffectPinMouseup);
+  hashtagsInput.removeEventListener('input', onHashtagsInputValidity);
 };
 
 uploadButton.addEventListener('change', editorOpen);
