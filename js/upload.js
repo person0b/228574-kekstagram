@@ -103,7 +103,7 @@ var Symbols = {
   COMMA: ','
 };
 
-var ValidityAlert = {
+var AlertStrings = {
   NO_HASH: 'Хэш-тег должен начинаться с символа # (решётка)',
   LENGTH_MAX: 'Максимальная длина одного хэш-тега ' + HashtagsParameters.MAX_LENGTH.toString() + ' символов, включая решётку;',
   LENGTH_MIN: 'Хеш-тег не может состоять только из одной решётки',
@@ -217,27 +217,39 @@ var onHashtagsInputValidity = function (evt) {
   var string = target.value;
   var hashtags = string.split(Symbols.SPACE);
 
+  if (hashtags.length > HashtagsParameters.MAX_COUNT) {
+    target.setCustomValidity(AlertStrings.COUNT);
+    return;
+  }
+
   for (var i = 0; i < hashtags.length; i++) {
     if (!hashtags[i].startsWith(Symbols.HASH)) {
-      target.setCustomValidity(ValidityAlert.NO_HASH);
-    } else if (hashtags[i].length === 1) {
-      target.setCustomValidity(ValidityAlert.LENGTH_MIN);
-    } else if (hashtags[i].includes(Symbols.DOT) || hashtags[i].includes(Symbols.COMMA)) {
-      target.setCustomValidity(ValidityAlert.SPLIT);
-    } else if (hashtags[i].length > HashtagsParameters.MAX_LENGTH) {
-      target.setCustomValidity(ValidityAlert.LENGTH_MAX);
+      target.setCustomValidity(AlertStrings.NO_HASH);
+      return;
+    }
+    if (hashtags[i].length === 1) {
+      target.setCustomValidity(AlertStrings.LENGTH_MIN);
+      return;
+    }
+    if (hashtags[i].includes(Symbols.DOT) || hashtags[i].includes(Symbols.COMMA)) {
+      target.setCustomValidity(AlertStrings.SPLIT);
+      return;
+    }
+    if (hashtags[i].length > HashtagsParameters.MAX_LENGTH) {
+      target.setCustomValidity(AlertStrings.LENGTH_MAX);
+      return;
     }
 
     for (var j = i + 1; j < hashtags.length; j++) {
       if (hashtags[i].toLowerCase() === hashtags[j].toLowerCase()) {
-        target.setCustomValidity(ValidityAlert.DUPLICATE);
+        target.setCustomValidity(AlertStrings.DUPLICATE);
+        return;
       }
     }
   }
 
-  if (hashtags.length > HashtagsParameters.MAX_COUNT) {
-    target.setCustomValidity(ValidityAlert.COUNT);
-  }
+  target.setCustomValidity('');
+  return;
 };
 
 var editorOpen = function () {
