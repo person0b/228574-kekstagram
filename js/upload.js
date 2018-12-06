@@ -13,6 +13,7 @@ var UploadSelectors = {
   EFFECT_VALUE: '.effect-level__value',
   EFFECT_LINE: '.effect-level__line',
   EFFECT_PIN: '.effect-level__pin',
+  EFFECT_DEPTH: '.effect-level__depth',
   FILTER_BUTTON: '.effects__radio',
   FILTER_PREVIEW: '.img-upload__preview',
   PREVIEW_IMAGE: '.img-upload__preview img',
@@ -122,6 +123,7 @@ var scaleBiggerButton = editor.querySelector(UploadSelectors.SCALE_BIGGER);
 
 var effectSlider = editor.querySelector(UploadSelectors.EFFECT_FIELD);
 var effectPin = editor.querySelector(UploadSelectors.EFFECT_PIN);
+var effectDepth = editor.querySelector(UploadSelectors.EFFECT_DEPTH);
 var effectLine = editor.querySelector(UploadSelectors.EFFECT_LINE);
 var effectValue = editor.querySelector(UploadSelectors.EFFECT_VALUE);
 
@@ -137,13 +139,6 @@ var getFilterValue = function (min, max, percent) {
   return ((max - min) / 100 * percent + min).toString();
 };
 
-var getEffectLevelPercent = function (pinScreenPosition) {
-  var lineRect = effectLine.getBoundingClientRect();
-  var lineWidth = lineRect.width;
-  var pinPosition = pinScreenPosition - lineRect.left;
-  return Math.round((pinPosition / lineWidth) * 100);
-};
-
 var scaleValueChange = function (percent) {
   scaleValue.value = percent.toString() + '%';
 };
@@ -154,28 +149,21 @@ var addFilterButtonClickHandler = function (button, filter) {
     filterPreview.classList.add(filter.class);
     effectValue.value = EFFECT_DEFAULT_VALUE;
     changeFilterStyle(effectValue.value);
+    effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + '%';
+    effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + '%';
     button.checked = true;
   };
 
   button.addEventListener('click', activateFilter);
 };
 
-var changeFilterStyle = function (value) {
-  for (var i = 0; i < FILTERS.length; i++) {
-    if (filterPreview.classList.contains(FILTERS[0].class)) {
-      filterPreview.style.filter = FILTERS[0].getFilter(value);
-      effectSlider.classList.add(HiddenClassNames.HIDDEN);
-    } else if (filterPreview.classList.contains(FILTERS[i].class)) {
-      filterPreview.style.filter = FILTERS[i].getFilter(value);
-      effectSlider.classList.remove(HiddenClassNames.HIDDEN);
-    }
-  }
-};
-
 var resetValue = function () {
   scaleValueChange(ScaleParameters.MAX);
   filterButtons[0].checked = true;
   effectValue.value = EFFECT_DEFAULT_VALUE;
+  effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + '%';
+  effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + '%';
+  filterPreview.style.filter = FILTERS[0].getFilter();
   effectSlider.classList.add(HiddenClassNames.HIDDEN);
   hashtagsInput.value = null;
   commentsInput.value = null;
@@ -207,9 +195,53 @@ var onScaleSmallerButtonClick = function () {
   previewImage.style.transform = 'scale(' + (currentPercent / 100).toString() + ')';
 };
 
-var onEffectPinMouseup = function (evt) {
-  effectValue.value = getEffectLevelPercent(evt.screenX);
-  changeFilterStyle(effectValue.value);
+var onEffectPinMousedown = function (evt) {
+  evt.preventDefault();
+
+  var getEffectLevelPercent = function (pinScreenPosition) {
+    var lineRect = effectLine.getBoundingClientRect();
+    var lineWidth = lineRect.width;
+    var pinPosition = pinScreenPosition - lineRect.left;
+    var percent = Math.round((pinPosition / lineWidth) * 100);
+    return Math.min(Math.max(percent, 0), 100);
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var currentPercent = getEffectLevelPercent(moveEvt.clientX);
+    changeFilterStyle(currentPercent);
+    effectPin.style.left = currentPercent.toString() + '%';
+    effectDepth.style.width = currentPercent.toString() + '%';
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+
+    var currentPercent = getEffectLevelPercent(upEvt.clientX);
+    effectValue.value = currentPercent;
+    changeFilterStyle(currentPercent);
+    effectPin.style.left = currentPercent.toString() + '%';
+    effectDepth.style.width = currentPercent.toString() + '%';
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+};
+
+var changeFilterStyle = function (value) {
+  for (var i = 0; i < FILTERS.length; i++) {
+    if (filterPreview.classList.contains(FILTERS[0].class)) {
+      filterPreview.style.filter = FILTERS[0].getFilter(value);
+      effectSlider.classList.add(HiddenClassNames.HIDDEN);
+    } else if (filterPreview.classList.contains(FILTERS[i].class)) {
+      filterPreview.style.filter = FILTERS[i].getFilter(value);
+      effectSlider.classList.remove(HiddenClassNames.HIDDEN);
+    }
+  }
 };
 
 var onHashtagsInputValidity = function (evt) {
@@ -262,7 +294,7 @@ var editorOpen = function () {
   closeEditorButton.addEventListener('keydown', onCloseEditorButtonEnterPress);
   scaleBiggerButton.addEventListener('click', onScaleBiggerButtonClick);
   scaleSmallerButton.addEventListener('click', onScaleSmallerButtonClick);
-  effectPin.addEventListener('mouseup', onEffectPinMouseup);
+  effectPin.addEventListener('mousedown', onEffectPinMousedown);
   hashtagsInput.addEventListener('input', onHashtagsInputValidity);
 };
 
@@ -277,7 +309,7 @@ var editorClose = function () {
   closeEditorButton.removeEventListener('keydown', onCloseEditorButtonEnterPress);
   scaleBiggerButton.removeEventListener('click', onScaleBiggerButtonClick);
   scaleSmallerButton.removeEventListener('click', onScaleSmallerButtonClick);
-  effectPin.removeEventListener('mouseup', onEffectPinMouseup);
+  effectPin.removeEventListener('mousedown', onEffectPinMousedown);
   hashtagsInput.removeEventListener('input', onHashtagsInputValidity);
 };
 
