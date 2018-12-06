@@ -101,7 +101,8 @@ var Symbols = {
   SPACE: ' ',
   HASH: '#',
   DOT: '.',
-  COMMA: ','
+  COMMA: ',',
+  PERCENT: '%'
 };
 
 var AlertStrings = {
@@ -140,7 +141,7 @@ var getFilterValue = function (min, max, percent) {
 };
 
 var scaleValueChange = function (percent) {
-  scaleValue.value = percent.toString() + '%';
+  scaleValue.value = percent.toString() + Symbols.PERCENT;
 };
 
 var addFilterButtonClickHandler = function (button, filter) {
@@ -149,8 +150,8 @@ var addFilterButtonClickHandler = function (button, filter) {
     filterPreview.classList.add(filter.class);
     effectValue.value = EFFECT_DEFAULT_VALUE;
     changeFilterStyle(effectValue.value);
-    effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + '%';
-    effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + '%';
+    effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
+    effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
     button.checked = true;
   };
 
@@ -161,8 +162,8 @@ var resetValue = function () {
   scaleValueChange(ScaleParameters.MAX);
   filterButtons[0].checked = true;
   effectValue.value = EFFECT_DEFAULT_VALUE;
-  effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + '%';
-  effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + '%';
+  effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
+  effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
   filterPreview.style.filter = FILTERS[0].getFilter();
   effectSlider.classList.add(HiddenClassNames.HIDDEN);
   hashtagsInput.value = null;
@@ -206,23 +207,25 @@ var onEffectPinMousedown = function (evt) {
     return Math.min(Math.max(percent, 0), 100);
   };
 
+  var changeEffectLevel = function (value) {
+    effectValue.value = value;
+    changeFilterStyle(value);
+    effectPin.style.left = value.toString() + Symbols.PERCENT;
+    effectDepth.style.width = value.toString() + Symbols.PERCENT;
+  };
+
   var onMouseMove = function (moveEvt) {
     moveEvt.preventDefault();
 
     var currentPercent = getEffectLevelPercent(moveEvt.clientX);
-    changeFilterStyle(currentPercent);
-    effectPin.style.left = currentPercent.toString() + '%';
-    effectDepth.style.width = currentPercent.toString() + '%';
+    changeEffectLevel(currentPercent);
   };
 
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
 
     var currentPercent = getEffectLevelPercent(upEvt.clientX);
-    effectValue.value = currentPercent;
-    changeFilterStyle(currentPercent);
-    effectPin.style.left = currentPercent.toString() + '%';
-    effectDepth.style.width = currentPercent.toString() + '%';
+    changeEffectLevel(currentPercent);
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
