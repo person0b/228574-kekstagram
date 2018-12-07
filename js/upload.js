@@ -138,7 +138,11 @@ var addEffectButtonClickHandler = function (button) {
   var effect = button.value;
 
   var activateEffect = function () {
-    preview.classList.remove(preview.classList[1]);
+    for (var effectObj in EFFECTS) {
+      if (preview.classList.contains(EFFECTS[effectObj].class)) {
+        preview.classList.remove(EFFECTS[effectObj].class);
+      }
+    }
     preview.classList.add(EFFECTS[effect].class);
     button.checked = true;
     setEffectLevel(effect, EFFECT_DEFAULT_VALUE);
