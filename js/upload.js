@@ -14,8 +14,9 @@ var UploadSelectors = {
   EFFECT_LINE: '.effect-level__line',
   EFFECT_PIN: '.effect-level__pin',
   EFFECT_DEPTH: '.effect-level__depth',
-  FILTER_BUTTON: '.effects__radio',
-  FILTER_PREVIEW: '.img-upload__preview',
+  EFFECT_BUTTON: '.effects__radio',
+  CURRENT_EFFECT: '[name="effect"]:checked',
+  PREVIEW: '.img-upload__preview',
   PREVIEW_IMAGE: '.img-upload__preview img',
   SCALE_VALUE: '.scale__control--value',
   SCALE_SMALLER: '.scale__control--smaller',
@@ -35,60 +36,60 @@ var ScaleParameters = {
   STEP: 25
 };
 
-var FILTERS = [
-  {
-    name: 'none',
+var EFFECTS = {
+  none: {
     class: 'effects__preview--none',
+    range: false,
     getFilter: function () {
       return 'none';
     }
   },
-  {
-    name: 'chrome',
+  chrome: {
     class: 'effects__preview--chrome',
+    range: true,
     minValue: 0,
     maxValue: 1,
     getFilter: function (percent) {
       return 'grayscale(' + getFilterValue(this.minValue, this.maxValue, percent) + ')';
     }
   },
-  {
-    name: 'sepia',
+  sepia: {
     class: 'effects__preview--sepia',
+    range: true,
     minValue: 0,
     maxValue: 1,
     getFilter: function (percent) {
       return 'sepia(' + getFilterValue(this.minValue, this.maxValue, percent) + ')';
     }
   },
-  {
-    name: 'marvin',
+  marvin: {
     class: 'effects__preview--marvin',
+    range: true,
     minValue: 0,
     maxValue: 100,
     getFilter: function (percent) {
       return 'invert(' + getFilterValue(this.minValue, this.maxValue, percent) + '%)';
     }
   },
-  {
-    name: 'phobos',
+  phobos: {
     class: 'effects__preview--phobos',
+    range: true,
     minValue: 0,
     maxValue: 3,
     getFilter: function (percent) {
       return 'blur(' + getFilterValue(this.minValue, this.maxValue, percent) + 'px)';
     }
   },
-  {
-    name: 'heat',
+  heat: {
     class: 'effects__preview--heat',
+    range: true,
     minValue: 1,
     maxValue: 3,
     getFilter: function (percent) {
       return 'brightness(' + getFilterValue(this.minValue, this.maxValue, percent) + ')';
     }
   }
-];
+};
 
 var EFFECT_DEFAULT_VALUE = 100;
 
@@ -97,12 +98,10 @@ var HashtagsParameters = {
   MAX_COUNT: 5
 };
 
-var Symbols = {
-  SPACE: ' ',
-  HASH: '#',
-  DOT: '.',
-  COMMA: ',',
-  PERCENT: '%'
+var HashtagsSpecial = {
+  SEPARATOR: ' ',
+  START_SYMBOL: '#',
+  BANNED_SYMBOLS: ['.', ',']
 };
 
 var AlertStrings = {
@@ -122,52 +121,35 @@ var scaleValue = editor.querySelector(UploadSelectors.SCALE_VALUE);
 var scaleSmallerButton = editor.querySelector(UploadSelectors.SCALE_SMALLER);
 var scaleBiggerButton = editor.querySelector(UploadSelectors.SCALE_BIGGER);
 
+var effectButtons = editor.querySelectorAll(UploadSelectors.EFFECT_BUTTON);
 var effectSlider = editor.querySelector(UploadSelectors.EFFECT_FIELD);
 var effectPin = editor.querySelector(UploadSelectors.EFFECT_PIN);
 var effectDepth = editor.querySelector(UploadSelectors.EFFECT_DEPTH);
 var effectLine = editor.querySelector(UploadSelectors.EFFECT_LINE);
 var effectValue = editor.querySelector(UploadSelectors.EFFECT_VALUE);
 
-var filterButtons = editor.querySelectorAll(UploadSelectors.FILTER_BUTTON);
-
-var filterPreview = editor.querySelector(UploadSelectors.FILTER_PREVIEW);
+var preview = editor.querySelector(UploadSelectors.PREVIEW);
 var previewImage = editor.querySelector(UploadSelectors.PREVIEW_IMAGE);
 
 var hashtagsInput = editor.querySelector(UploadSelectors.HASHTAGS_INPUT);
 var commentsInput = editor.querySelector(UploadSelectors.COMMENTS_INPUT);
 
-var getFilterValue = function (min, max, percent) {
-  return ((max - min) / 100 * percent + min).toString();
-};
+var addEffectButtonClickHandler = function (button) {
+  var effect = button.value;
 
-var scaleValueChange = function (percent) {
-  scaleValue.value = percent.toString() + Symbols.PERCENT;
-};
-
-var addFilterButtonClickHandler = function (button, filter) {
-  var activateFilter = function () {
-    filterPreview.classList.remove(filterPreview.classList[1]);
-    filterPreview.classList.add(filter.class);
-    effectValue.value = EFFECT_DEFAULT_VALUE;
-    changeFilterStyle(effectValue.value);
-    effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
-    effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
+  var activateEffect = function () {
+    preview.classList.remove(preview.classList[1]);
+    preview.classList.add(EFFECTS[effect].class);
     button.checked = true;
+    setEffectLevel(effect, EFFECT_DEFAULT_VALUE);
+    if (EFFECTS[effect].range) {
+      effectSlider.classList.remove(HiddenClassNames.HIDDEN);
+    } else {
+      effectSlider.classList.add(HiddenClassNames.HIDDEN);
+    }
   };
 
-  button.addEventListener('click', activateFilter);
-};
-
-var resetValue = function () {
-  scaleValueChange(ScaleParameters.MAX);
-  filterButtons[0].checked = true;
-  effectValue.value = EFFECT_DEFAULT_VALUE;
-  effectPin.style.left = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
-  effectDepth.style.width = EFFECT_DEFAULT_VALUE.toString() + Symbols.PERCENT;
-  filterPreview.style.filter = FILTERS[0].getFilter();
-  effectSlider.classList.add(HiddenClassNames.HIDDEN);
-  hashtagsInput.value = null;
-  commentsInput.value = null;
+  button.addEventListener('click', activateEffect);
 };
 
 var onEditorEscPress = function (evt) {
@@ -185,19 +167,19 @@ var onCloseEditorButtonEnterPress = function (evt) {
 var onScaleBiggerButtonClick = function () {
   var currentPercent = parseInt(scaleValue.value, 10);
   currentPercent = Math.min(ScaleParameters.MAX, currentPercent + ScaleParameters.STEP);
-  scaleValueChange(currentPercent);
-  previewImage.style.transform = 'scale(' + (currentPercent / 100).toString() + ')';
+  setScale(currentPercent);
 };
 
 var onScaleSmallerButtonClick = function () {
   var currentPercent = parseInt(scaleValue.value, 10);
   currentPercent = Math.max(ScaleParameters.MIN, currentPercent - ScaleParameters.STEP);
-  scaleValueChange(currentPercent);
-  previewImage.style.transform = 'scale(' + (currentPercent / 100).toString() + ')';
+  setScale(currentPercent);
 };
 
 var onEffectPinMousedown = function (evt) {
   evt.preventDefault();
+
+  var effect = editor.querySelector(UploadSelectors.CURRENT_EFFECT).value;
 
   var getEffectLevelPercent = function (pinScreenPosition) {
     var lineRect = effectLine.getBoundingClientRect();
@@ -207,25 +189,18 @@ var onEffectPinMousedown = function (evt) {
     return Math.min(Math.max(percent, 0), 100);
   };
 
-  var changeEffectLevel = function (value) {
-    effectValue.value = value;
-    changeFilterStyle(value);
-    effectPin.style.left = value.toString() + Symbols.PERCENT;
-    effectDepth.style.width = value.toString() + Symbols.PERCENT;
-  };
-
   var onMouseMove = function (moveEvt) {
     moveEvt.preventDefault();
 
     var currentPercent = getEffectLevelPercent(moveEvt.clientX);
-    changeEffectLevel(currentPercent);
+    setEffectLevel(effect, currentPercent);
   };
 
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
 
     var currentPercent = getEffectLevelPercent(upEvt.clientX);
-    changeEffectLevel(currentPercent);
+    setEffectLevel(effect, currentPercent);
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -235,22 +210,10 @@ var onEffectPinMousedown = function (evt) {
   document.addEventListener('mouseup', onMouseUp);
 };
 
-var changeFilterStyle = function (value) {
-  for (var i = 0; i < FILTERS.length; i++) {
-    if (filterPreview.classList.contains(FILTERS[0].class)) {
-      filterPreview.style.filter = FILTERS[0].getFilter(value);
-      effectSlider.classList.add(HiddenClassNames.HIDDEN);
-    } else if (filterPreview.classList.contains(FILTERS[i].class)) {
-      filterPreview.style.filter = FILTERS[i].getFilter(value);
-      effectSlider.classList.remove(HiddenClassNames.HIDDEN);
-    }
-  }
-};
-
 var onHashtagsInputValidity = function (evt) {
   var target = evt.target;
   var string = target.value;
-  var hashtags = string.split(Symbols.SPACE);
+  var hashtags = string.split(HashtagsSpecial.SEPARATOR);
 
   if (hashtags.length > HashtagsParameters.MAX_COUNT) {
     target.setCustomValidity(AlertStrings.COUNT);
@@ -258,7 +221,7 @@ var onHashtagsInputValidity = function (evt) {
   }
 
   for (var i = 0; i < hashtags.length; i++) {
-    if (!hashtags[i].startsWith(Symbols.HASH)) {
+    if (!hashtags[i].startsWith(HashtagsSpecial.START_SYMBOL)) {
       target.setCustomValidity(AlertStrings.NO_HASH);
       return;
     }
@@ -266,13 +229,16 @@ var onHashtagsInputValidity = function (evt) {
       target.setCustomValidity(AlertStrings.LENGTH_MIN);
       return;
     }
-    if (hashtags[i].includes(Symbols.DOT) || hashtags[i].includes(Symbols.COMMA)) {
-      target.setCustomValidity(AlertStrings.SPLIT);
-      return;
-    }
     if (hashtags[i].length > HashtagsParameters.MAX_LENGTH) {
       target.setCustomValidity(AlertStrings.LENGTH_MAX);
       return;
+    }
+
+    for (var s = 0; s < HashtagsSpecial.BANNED_SYMBOLS.length; s++) {
+      if (hashtags[i].includes(HashtagsSpecial.BANNED_SYMBOLS[s])) {
+        target.setCustomValidity(AlertStrings.SPLIT);
+        return;
+      }
     }
 
     for (var j = i + 1; j < hashtags.length; j++) {
@@ -285,6 +251,31 @@ var onHashtagsInputValidity = function (evt) {
 
   target.setCustomValidity('');
   return;
+};
+
+var getFilterValue = function (min, max, percent) {
+  return ((max - min) / 100 * percent + min).toString();
+};
+
+var setScale = function (percent) {
+  scaleValue.value = percent.toString() + '%';
+  previewImage.style.transform = 'scale(' + (percent / 100).toString() + ')';
+};
+
+var resetValue = function () {
+  setScale(ScaleParameters.MAX);
+  effectButtons[0].checked = true;
+  setEffectLevel(effectButtons[0].value, EFFECT_DEFAULT_VALUE);
+  effectSlider.classList.add(HiddenClassNames.HIDDEN);
+  hashtagsInput.value = null;
+  commentsInput.value = null;
+};
+
+var setEffectLevel = function (effect, level) {
+  effectValue.value = level;
+  preview.style.filter = EFFECTS[effect].getFilter(level);
+  effectPin.style.left = level.toString() + '%';
+  effectDepth.style.width = level.toString() + '%';
 };
 
 var editorOpen = function () {
@@ -302,8 +293,6 @@ var editorOpen = function () {
 };
 
 var editorClose = function () {
-  resetValue();
-
   editor.classList.add(HiddenClassNames.HIDDEN);
   uploadButton.value = null;
 
@@ -318,6 +307,6 @@ var editorClose = function () {
 
 uploadButton.addEventListener('change', editorOpen);
 
-for (var i = 0; i < filterButtons.length; i++) {
-  addFilterButtonClickHandler(filterButtons[i], FILTERS[i]);
+for (var i = 0; i < effectButtons.length; i++) {
+  addEffectButtonClickHandler(effectButtons[i]);
 }
