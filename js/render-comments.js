@@ -2,7 +2,8 @@
 
 (function () {
   var Parameters = {
-    AVATAR_SIZE: 35
+    AVATAR_SIZE: 35,
+    COMMENTS_COUNT: 5
   };
   var Selectors = {
     LIST: '.social__comments',
@@ -38,7 +39,7 @@
   var createCommentsFragment = function (comments) {
     var commentsFragment = document.createDocumentFragment();
 
-    for (var i = 0; i < comments.length; i++) {
+    for (var i = 0; i < Parameters.COMMENTS_COUNT; i++) {
       commentsFragment.appendChild(renderComment(comments[i]));
     }
 
