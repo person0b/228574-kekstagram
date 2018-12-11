@@ -2,10 +2,6 @@
 
 (function () {
   var Parameters = {
-    AVATAR_COUNT: 6,
-    AVATAR_URL: 'img/avatar-',
-    AVATAR_EXTENSION: '.svg',
-    AVATAR_ALT: 'Аватар комментатора фотографии',
     AVATAR_SIZE: 35
   };
   var Selectors = {
@@ -17,7 +13,7 @@
     LOADER: '.comments-loader'
   };
 
-  var renderComment = function (commentText) {
+  var renderComment = function (commentData) {
     var comment = document.createElement('li');
     var avatar = document.createElement('img');
     var text = document.createElement('p');
@@ -25,14 +21,15 @@
     comment.classList.add(Selectors.ITEM);
 
     avatar.classList.add(Selectors.AVATAR);
-    avatar.src = Parameters.AVATAR_URL + window.utils.getRandomInt(1, Parameters.AVATAR_COUNT + 1) + Parameters.AVATAR_EXTENSION;
-    avatar.alt = Parameters.AVATAR_ALT;
+    avatar.src = commentData.avatar;
+    avatar.title = commentData.name;
+    avatar.alt = commentData.name;
     avatar.width = Parameters.AVATAR_SIZE;
     avatar.height = Parameters.AVATAR_SIZE;
     comment.appendChild(avatar);
 
     text.classList.add(Selectors.TEXT);
-    text.textContent = commentText;
+    text.textContent = commentData.message;
     comment.appendChild(text);
 
     return comment;

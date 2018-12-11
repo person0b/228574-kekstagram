@@ -23,15 +23,20 @@
     return previewElement;
   };
 
-  var createPreviewsFragment = function (picturesData) {
+  var createPreviews = function (picturesData) {
     var previewFragment = document.createDocumentFragment();
 
     for (var i = 0; i < picturesData.length; i++) {
       previewFragment.appendChild(renderPreview(picturesData[i]));
     }
 
-    return previewFragment;
+    list.appendChild(previewFragment);
+
+    var previews = list.querySelectorAll(Selectors.ITEM);
+    for (var j = 0; j < window.picturesData.length; j++) {
+      window.pictureEvents.open(previews[j], picturesData[j]);
+    }
   };
 
-  list.appendChild(createPreviewsFragment(window.picturesData));
+  window.backend.load(createPreviews);
 })();
