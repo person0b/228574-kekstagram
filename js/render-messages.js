@@ -10,14 +10,18 @@
     ERROR_BUTTON: '.error__button',
     SUCCESS_BUTTON: '.success__button'
   };
+  var MessageTypes = {
+    ERROR: 'error',
+    SUCCESS: 'success'
+  };
 
   var parrent = document.querySelector(Selectors.ROOT);
   var error = document.querySelector(Selectors.ERROR_TEMPLATE).content.querySelector(Selectors.ERROR_ITEM);
   var success = document.querySelector(Selectors.SUCCESS_TEMPLATE).content.querySelector(Selectors.SUCCESS_ITEM);
 
-  window.renderMessages = function (evtType) {
+  var createMessage = function (evtType) {
     var template = success;
-    if (evtType === 'error') {
+    if (evtType === MessageTypes.ERROR) {
       template = error;
     }
 
@@ -25,7 +29,7 @@
     parrent.appendChild(message);
 
     var button = message.querySelector(Selectors.SUCCESS_BUTTON);
-    if (evtType === 'error') {
+    if (evtType === MessageTypes.ERROR) {
       button = message.querySelector(Selectors.ERROR_BUTTON);
     }
 
@@ -58,5 +62,10 @@
     button.addEventListener('click', onButtonClick);
     window.addEventListener('keydown', onMessageEscPress);
     message.addEventListener('click', onMessageClick);
+  };
+
+  window.renderMessages = {
+    create: createMessage,
+    types: MessageTypes
   };
 })();
