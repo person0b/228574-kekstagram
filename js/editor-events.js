@@ -72,4 +72,8 @@
   };
 
   uploadButton.addEventListener('change', open);
+
+  window.editorEvents = {
+    close: close
+  };
 })();

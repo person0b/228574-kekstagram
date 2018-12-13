@@ -8,7 +8,6 @@
   var BODY = document.querySelector('body');
 
 
-  var previews = document.querySelectorAll(Selectors.PREVIEW);
   var bigPicture = window.utils.pictureModal;
   var closeButton = bigPicture.querySelector(Selectors.CLOSE_BUTTON);
 
@@ -40,7 +39,7 @@
     }
   };
 
-  for (var i = 0; i < window.picturesData.length; i++) {
-    addPreviewClickHandler(previews[i], window.picturesData[i]);
-  }
+  window.pictureEvents = {
+    open: addPreviewClickHandler
+  };
 })();

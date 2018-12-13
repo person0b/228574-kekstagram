@@ -6,7 +6,7 @@
     MAX_COUNT: 5
   };
   var Special = {
-    SEPARATOR: ' ',
+    SEPARATOR: /\s+/,
     START_SYMBOL: '#',
     BANNED_SYMBOLS: ['.', ',']
   };
