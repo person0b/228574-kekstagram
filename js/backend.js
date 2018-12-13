@@ -1,11 +1,14 @@
 'use strict';
 
 (function () {
-  var URL = 'https://js.dump.academy/kekstagram';
-  var DATA = '/data';
+  var ServerParameter = {
+    URL: 'https://js.dump.academy/kekstagram',
+    DATA: '/data',
+    TIMEOUT: 10000
+  };
 
   var ErrorMessages = {
-    LOAD: 'Неудалось загрузить изображения',
+    LOAD: 'Не удалось загрузить изображения',
     ERROR: 'Произошла ошибка соединения',
     TIMEOUT: 'Запрос не успел выполниться за '
   };
@@ -28,8 +31,8 @@
       onError(ErrorMessages.TIMEOUT + xhr.timeout + 'мс');
     });
 
-    xhr.timeout = 10000;
-    xhr.open('GET', URL + DATA);
+    xhr.timeout = ServerParameter.TIMEOUT;
+    xhr.open('GET', ServerParameter.URL + ServerParameter.DATA);
     xhr.send();
   };
 
@@ -51,7 +54,7 @@
       onError(ErrorMessages.TIMEOUT + xhr.timeout + 'мс');
     });
 
-    xhr.open('POST', URL);
+    xhr.open('POST', ServerParameter.URL);
     xhr.send(data);
   };
 

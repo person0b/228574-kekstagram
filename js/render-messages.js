@@ -15,7 +15,7 @@
     SUCCESS: 'success'
   };
 
-  var parrent = document.querySelector(Selectors.ROOT);
+  var parent = document.querySelector(Selectors.ROOT);
   var error = document.querySelector(Selectors.ERROR_TEMPLATE).content.querySelector(Selectors.ERROR_ITEM);
   var success = document.querySelector(Selectors.SUCCESS_TEMPLATE).content.querySelector(Selectors.SUCCESS_ITEM);
 
@@ -26,7 +26,7 @@
     }
 
     var message = template.cloneNode(true);
-    parrent.appendChild(message);
+    parent.appendChild(message);
 
     var button = message.querySelector(Selectors.SUCCESS_BUTTON);
     if (evtType === MessageTypes.ERROR) {
@@ -34,7 +34,7 @@
     }
 
     var closeMessage = function () {
-      parrent.removeChild(message);
+      parent.removeChild(message);
 
       button.removeEventListener('click', onButtonClick);
       window.removeEventListener('keydown', onMessageEscPress);
