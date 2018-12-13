@@ -6,7 +6,7 @@
     MAX_COUNT: 5
   };
   var Special = {
-    SEPARATOR: ' ',
+    SEPARATOR: /\s+/,
     START_SYMBOL: '#',
     BANNED_SYMBOLS: ['.', ',']
   };
@@ -30,32 +30,30 @@
     }
 
     for (var i = 0; i < hashtags.length; i++) {
-      if (hashtags[i].length > 0) {
-        if (!hashtags[i].startsWith(Special.START_SYMBOL)) {
-          target.setCustomValidity(AlertStrings.NO_HASH);
-          return;
-        }
-        if (hashtags[i].length === 1) {
-          target.setCustomValidity(AlertStrings.LENGTH_MIN);
-          return;
-        }
-        if (hashtags[i].length > Parameters.MAX_LENGTH) {
-          target.setCustomValidity(AlertStrings.LENGTH_MAX);
-          return;
-        }
+      if (!hashtags[i].startsWith(Special.START_SYMBOL)) {
+        target.setCustomValidity(AlertStrings.NO_HASH);
+        return;
+      }
+      if (hashtags[i].length === 1) {
+        target.setCustomValidity(AlertStrings.LENGTH_MIN);
+        return;
+      }
+      if (hashtags[i].length > Parameters.MAX_LENGTH) {
+        target.setCustomValidity(AlertStrings.LENGTH_MAX);
+        return;
+      }
 
-        for (var s = 0; s < Special.BANNED_SYMBOLS.length; s++) {
-          if (hashtags[i].includes(Special.BANNED_SYMBOLS[s])) {
-            target.setCustomValidity(AlertStrings.SPLIT);
-            return;
-          }
+      for (var s = 0; s < Special.BANNED_SYMBOLS.length; s++) {
+        if (hashtags[i].includes(Special.BANNED_SYMBOLS[s])) {
+          target.setCustomValidity(AlertStrings.SPLIT);
+          return;
         }
+      }
 
-        for (var j = i + 1; j < hashtags.length; j++) {
-          if (hashtags[i].toLowerCase() === hashtags[j].toLowerCase()) {
-            target.setCustomValidity(AlertStrings.DUPLICATE);
-            return;
-          }
+      for (var j = i + 1; j < hashtags.length; j++) {
+        if (hashtags[i].toLowerCase() === hashtags[j].toLowerCase()) {
+          target.setCustomValidity(AlertStrings.DUPLICATE);
+          return;
         }
       }
     }
