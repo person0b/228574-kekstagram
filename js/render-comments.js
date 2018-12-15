@@ -3,15 +3,12 @@
 (function () {
   var Parameter = {
     AVATAR_SIZE: 35,
-    COMMENTS_COUNT: 5
   };
   var Selector = {
     LIST: '.social__comments',
     ITEM: 'social__comment',
     TEXT: 'social__text',
-    AVATAR: 'social__picture',
-    COUNT: '.social__comment-count',
-    LOADER: '.comments-loader'
+    AVATAR: 'social__picture'
   };
 
   var renderComment = function (commentData) {
@@ -36,11 +33,11 @@
     return comment;
   };
 
-  var createCommentsFragment = function (comments) {
+  var createCommentsFragment = function (commentsData, commentsCount) {
     var commentsFragment = document.createDocumentFragment();
 
-    for (var i = 0; i < Math.min(Parameter.COMMENTS_COUNT, comments.length); i++) {
-      commentsFragment.appendChild(renderComment(comments[i]));
+    for (var i = 0; i < commentsCount; i++) {
+      commentsFragment.appendChild(renderComment(commentsData[i]));
     }
 
     return commentsFragment;
