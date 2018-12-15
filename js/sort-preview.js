@@ -69,20 +69,20 @@
     discussedButton.classList.toggle(Class.BUTTON_ACTIVE, discussedButton === target);
   };
 
-  var onPopularButtonClick = function (evt) {
+  var onPopularButtonClick = window.utils.debounce(function (evt) {
     switchActiveButtonClass(evt.target);
     updatePreview(picturesData);
-  };
+  });
 
-  var onNewButtonClick = function (evt) {
+  var onNewButtonClick = window.utils.debounce(function (evt) {
     switchActiveButtonClass(evt.target);
     updatePreview(sortNewPictures());
-  };
+  });
 
-  var onDiscussedButtonClick = function (evt) {
+  var onDiscussedButtonClick = window.utils.debounce(function (evt) {
     switchActiveButtonClass(evt.target);
     updatePreview(sortDiscussedPictures());
-  };
+  });
 
   var loadPicturesSuccess = function (data) {
     picturesData = data;
