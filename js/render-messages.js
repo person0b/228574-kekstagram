@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var Selectors = {
+  var Selector = {
     ROOT: 'main',
     ERROR_TEMPLATE: '#error',
     SUCCESS_TEMPLATE: '#success',
@@ -10,27 +10,27 @@
     ERROR_BUTTON: '.error__button',
     SUCCESS_BUTTON: '.success__button'
   };
-  var MessageTypes = {
+  var MessageType = {
     ERROR: 'error',
     SUCCESS: 'success'
   };
 
-  var parent = document.querySelector(Selectors.ROOT);
-  var error = document.querySelector(Selectors.ERROR_TEMPLATE).content.querySelector(Selectors.ERROR_ITEM);
-  var success = document.querySelector(Selectors.SUCCESS_TEMPLATE).content.querySelector(Selectors.SUCCESS_ITEM);
+  var parent = document.querySelector(Selector.ROOT);
+  var error = document.querySelector(Selector.ERROR_TEMPLATE).content.querySelector(Selector.ERROR_ITEM);
+  var success = document.querySelector(Selector.SUCCESS_TEMPLATE).content.querySelector(Selector.SUCCESS_ITEM);
 
   var createMessage = function (evtType) {
     var template = success;
-    if (evtType === MessageTypes.ERROR) {
+    if (evtType === MessageType.ERROR) {
       template = error;
     }
 
     var message = template.cloneNode(true);
     parent.appendChild(message);
 
-    var button = message.querySelector(Selectors.SUCCESS_BUTTON);
-    if (evtType === MessageTypes.ERROR) {
-      button = message.querySelector(Selectors.ERROR_BUTTON);
+    var button = message.querySelector(Selector.SUCCESS_BUTTON);
+    if (evtType === MessageType.ERROR) {
+      button = message.querySelector(Selector.ERROR_BUTTON);
     }
 
     var closeMessage = function () {
@@ -46,7 +46,7 @@
     };
 
     var onMessageEscPress = function (evt) {
-      if (evt.keyCode === window.utils.keyCodes.ESC) {
+      if (evt.keyCode === window.utils.keyCode.ESC) {
         closeMessage();
       }
     };
@@ -66,6 +66,6 @@
 
   window.renderMessages = {
     create: createMessage,
-    types: MessageTypes
+    types: MessageType
   };
 })();

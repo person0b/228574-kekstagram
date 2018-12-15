@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var Selectors = {
+  var Selector = {
     FIELD: '.effect-level',
     VALUE: '.effect-level__value',
     LINE: '.effect-level__line',
@@ -68,13 +68,13 @@
   var DEFAULT_LEVEL = 100;
 
   var editor = window.utils.editorModal;
-  var buttons = editor.querySelectorAll(Selectors.BUTTON);
-  var slider = editor.querySelector(Selectors.FIELD);
-  var pin = editor.querySelector(Selectors.PIN);
-  var depth = editor.querySelector(Selectors.DEPTH);
-  var line = editor.querySelector(Selectors.LINE);
-  var value = editor.querySelector(Selectors.VALUE);
-  var image = editor.querySelector(Selectors.IMAGE);
+  var buttons = editor.querySelectorAll(Selector.BUTTON);
+  var slider = editor.querySelector(Selector.FIELD);
+  var pin = editor.querySelector(Selector.PIN);
+  var depth = editor.querySelector(Selector.DEPTH);
+  var line = editor.querySelector(Selector.LINE);
+  var value = editor.querySelector(Selector.VALUE);
+  var image = editor.querySelector(Selector.IMAGE);
 
   var getValue = function (min, max, percent) {
     return ((max - min) / 100 * percent + min).toString();
@@ -100,9 +100,9 @@
       button.checked = true;
       setLevel(effect, DEFAULT_LEVEL);
       if (EFFECTS[effect].showRange) {
-        slider.classList.remove(window.utils.classNames.HIDDEN);
+        slider.classList.remove(window.utils.className.HIDDEN);
       } else {
-        slider.classList.add(window.utils.classNames.HIDDEN);
+        slider.classList.add(window.utils.className.HIDDEN);
       }
     };
 
@@ -112,7 +112,7 @@
   var onPinMousedown = function (evt) {
     evt.preventDefault();
 
-    var effect = editor.querySelector(Selectors.CURRENT).value;
+    var effect = editor.querySelector(Selector.CURRENT).value;
 
     var getEffectLevelPercent = function (pinScreenPosition) {
       var lineRect = line.getBoundingClientRect();
@@ -146,7 +146,7 @@
   var reset = function () {
     buttons[0].checked = true;
     setLevel(buttons[0].value, DEFAULT_LEVEL);
-    slider.classList.add(window.utils.classNames.HIDDEN);
+    slider.classList.add(window.utils.className.HIDDEN);
   };
 
   window.effectEvents = {

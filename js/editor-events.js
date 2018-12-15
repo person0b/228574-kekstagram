@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var Selectors = {
+  var Selector = {
     UPLOAD_BUTTON: '#upload-file',
     CLOSE: '.img-upload__cancel',
     HASHTAGS_INPUT: '.text__hashtags',
@@ -9,8 +9,8 @@
   };
 
   var editor = window.utils.editorModal;
-  var uploadButton = document.querySelector(Selectors.UPLOAD_BUTTON);
-  var closeButton = editor.querySelector(Selectors.CLOSE);
+  var uploadButton = document.querySelector(Selector.UPLOAD_BUTTON);
+  var closeButton = editor.querySelector(Selector.CLOSE);
 
   var scaleSmallerButton = window.scaleEvents.smallerButton;
   var scaleBiggerButton = window.scaleEvents.biggerButton;
@@ -18,18 +18,18 @@
   var effectButtons = window.effectEvents.buttons;
   var effectPin = window.effectEvents.pin;
 
-  var hashtagsInput = editor.querySelector(Selectors.HASHTAGS_INPUT);
-  var commentsInput = editor.querySelector(Selectors.COMMENTS_INPUT);
+  var hashtagsInput = editor.querySelector(Selector.HASHTAGS_INPUT);
+  var commentsInput = editor.querySelector(Selector.COMMENTS_INPUT);
 
 
   var onEditorEscPress = function (evt) {
-    if (evt.keyCode === window.utils.keyCodes.ESC && document.activeElement !== hashtagsInput && document.activeElement !== commentsInput) {
+    if (evt.keyCode === window.utils.keyCode.ESC && document.activeElement !== hashtagsInput && document.activeElement !== commentsInput) {
       close();
     }
   };
 
   var onCloseButtonEnterPress = function (evt) {
-    if (evt.keyCode === window.utils.keyCodes.ENTER) {
+    if (evt.keyCode === window.utils.keyCode.ENTER) {
       close();
     }
   };
@@ -44,7 +44,7 @@
   var open = function () {
     resetValue();
 
-    editor.classList.remove(window.utils.classNames.HIDDEN);
+    editor.classList.remove(window.utils.className.HIDDEN);
 
     document.addEventListener('keydown', onEditorEscPress);
     closeButton.addEventListener('click', close);
@@ -59,7 +59,7 @@
   };
 
   var close = function () {
-    editor.classList.add(window.utils.classNames.HIDDEN);
+    editor.classList.add(window.utils.className.HIDDEN);
     uploadButton.value = null;
 
     document.removeEventListener('keydown', onEditorEscPress);

@@ -1,11 +1,11 @@
 'use strict';
 
 (function () {
-  var Parameters = {
+  var Parameter = {
     AVATAR_SIZE: 35,
     COMMENTS_COUNT: 5
   };
-  var Selectors = {
+  var Selector = {
     LIST: '.social__comments',
     ITEM: 'social__comment',
     TEXT: 'social__text',
@@ -19,17 +19,17 @@
     var avatar = document.createElement('img');
     var text = document.createElement('p');
 
-    comment.classList.add(Selectors.ITEM);
+    comment.classList.add(Selector.ITEM);
 
-    avatar.classList.add(Selectors.AVATAR);
+    avatar.classList.add(Selector.AVATAR);
     avatar.src = commentData.avatar;
     avatar.title = commentData.name;
     avatar.alt = commentData.name;
-    avatar.width = Parameters.AVATAR_SIZE;
-    avatar.height = Parameters.AVATAR_SIZE;
+    avatar.width = Parameter.AVATAR_SIZE;
+    avatar.height = Parameter.AVATAR_SIZE;
     comment.appendChild(avatar);
 
-    text.classList.add(Selectors.TEXT);
+    text.classList.add(Selector.TEXT);
     text.textContent = commentData.message;
     comment.appendChild(text);
 
@@ -39,7 +39,7 @@
   var createCommentsFragment = function (comments) {
     var commentsFragment = document.createDocumentFragment();
 
-    for (var i = 0; i < Parameters.COMMENTS_COUNT; i++) {
+    for (var i = 0; i < Math.min(Parameter.COMMENTS_COUNT, comments.length); i++) {
       commentsFragment.appendChild(renderComment(comments[i]));
     }
 
