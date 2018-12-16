@@ -53,7 +53,7 @@
     scaleSmallerButton.addEventListener('click', window.scaleEvents.onSmallerButtonClick);
     effectPin.addEventListener('mousedown', window.effectEvents.onPinMousedown);
     for (var i = 0; i < effectButtons.length; i++) {
-      window.effectEvents.addButtonClickHandler(effectButtons[i]);
+      window.effectEvents.activateEffect(effectButtons[i]);
     }
     hashtagsInput.addEventListener('input', window.hashtagsValidity);
   };

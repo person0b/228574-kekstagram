@@ -3,7 +3,7 @@
 (function () {
   var Selector = {
     FIELD: '.effect-level',
-    VALUE: '.effect-level__value',
+    LEVEL_INPUT: '.effect-level__value',
     LINE: '.effect-level__line',
     PIN: '.effect-level__pin',
     DEPTH: '.effect-level__depth',
@@ -73,7 +73,7 @@
   var pin = editor.querySelector(Selector.PIN);
   var depth = editor.querySelector(Selector.DEPTH);
   var line = editor.querySelector(Selector.LINE);
-  var value = editor.querySelector(Selector.VALUE);
+  var inputLevel = editor.querySelector(Selector.LEVEL_INPUT);
   var image = editor.querySelector(Selector.IMAGE);
 
   var getValue = function (min, max, percent) {
@@ -81,16 +81,16 @@
   };
 
   var setLevel = function (effect, level) {
-    value.value = level;
+    inputLevel.setAttribute('value', level);
     image.style.filter = EFFECTS[effect].getFilter(level);
     pin.style.left = level.toString() + '%';
     depth.style.width = level.toString() + '%';
   };
 
-  var addButtonClickHandler = function (button) {
+  var activateEffect = function (button) {
     var effect = button.value;
 
-    var activateEffect = function () {
+    var onEffectButtonClick = function () {
       for (var effectObj in EFFECTS) {
         if (image.classList.contains(EFFECTS[effectObj].class)) {
           image.classList.remove(EFFECTS[effectObj].class);
@@ -106,7 +106,7 @@
       }
     };
 
-    button.addEventListener('click', activateEffect);
+    button.addEventListener('click', onEffectButtonClick);
   };
 
   var onPinMousedown = function (evt) {
@@ -152,7 +152,7 @@
   window.effectEvents = {
     buttons: buttons,
     pin: pin,
-    addButtonClickHandler: addButtonClickHandler,
+    activateEffect: activateEffect,
     onPinMousedown: onPinMousedown,
     reset: reset
   };

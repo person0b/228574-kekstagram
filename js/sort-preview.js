@@ -81,7 +81,7 @@
   var loadPicturesSuccess = function (data) {
     picturesData = data;
     updatePreview(picturesData);
-    filters.classNameList.remove(ClassName.INACTIVE);
+    filters.classList.remove(ClassName.INACTIVE);
     popularButton.addEventListener('click', onPopularButtonClick);
     newButton.addEventListener('click', onNewButtonClick);
     discussedButton.addEventListener('click', onDiscussedButtonClick);
