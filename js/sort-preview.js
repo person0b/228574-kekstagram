@@ -39,14 +39,8 @@
 
   var sortDiscussedPictures = function () {
     var discussedPictures = picturesData.slice();
-    return discussedPictures.sort(function (left, right) {
-      if (left.comments.length > right.comments.length) {
-        return -1;
-      } else if (left.comments.length < right.comments.length) {
-        return 1;
-      } else {
-        return 0;
-      }
+    return discussedPictures.sort(function (a, b) {
+      return (b.comments.length - a.comments.length);
     });
   };
 
