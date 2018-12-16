@@ -9,7 +9,7 @@
     NEW: '#filter-new',
     DISCUSSED: '#filter-discussed'
   };
-  var Class = {
+  var ClassName = {
     INACTIVE: 'img-filters--inactive',
     BUTTON_ACTIVE: 'img-filters__button--active'
   };
@@ -57,31 +57,31 @@
     window.renderPreview(pictures);
   };
 
-  var switchActiveButtonClass = function (target) {
-    popularButton.classList.toggle(Class.BUTTON_ACTIVE, popularButton === target);
-    newButton.classList.toggle(Class.BUTTON_ACTIVE, newButton === target);
-    discussedButton.classList.toggle(Class.BUTTON_ACTIVE, discussedButton === target);
+  var switchActiveButtonClassName = function (target) {
+    popularButton.classNameList.toggle(ClassName.BUTTON_ACTIVE, popularButton === target);
+    newButton.classNameList.toggle(ClassName.BUTTON_ACTIVE, newButton === target);
+    discussedButton.classNameList.toggle(ClassName.BUTTON_ACTIVE, discussedButton === target);
   };
 
   var onPopularButtonClick = window.utils.debounce(function (evt) {
-    switchActiveButtonClass(evt.target);
+    switchActiveButtonClassName(evt.target);
     updatePreview(picturesData);
   });
 
   var onNewButtonClick = window.utils.debounce(function (evt) {
-    switchActiveButtonClass(evt.target);
+    switchActiveButtonClassName(evt.target);
     updatePreview(sortNewPictures());
   });
 
   var onDiscussedButtonClick = window.utils.debounce(function (evt) {
-    switchActiveButtonClass(evt.target);
+    switchActiveButtonClassName(evt.target);
     updatePreview(sortDiscussedPictures());
   });
 
   var loadPicturesSuccess = function (data) {
     picturesData = data;
     updatePreview(picturesData);
-    filters.classList.remove(Class.INACTIVE);
+    filters.classNameList.remove(ClassName.INACTIVE);
     popularButton.addEventListener('click', onPopularButtonClick);
     newButton.addEventListener('click', onNewButtonClick);
     discussedButton.addEventListener('click', onDiscussedButtonClick);
