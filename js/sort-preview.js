@@ -58,9 +58,9 @@
   };
 
   var switchActiveButtonClassName = function (target) {
-    popularButton.classNameList.toggle(ClassName.BUTTON_ACTIVE, popularButton === target);
-    newButton.classNameList.toggle(ClassName.BUTTON_ACTIVE, newButton === target);
-    discussedButton.classNameList.toggle(ClassName.BUTTON_ACTIVE, discussedButton === target);
+    popularButton.classList.toggle(ClassName.BUTTON_ACTIVE, popularButton === target);
+    newButton.classList.toggle(ClassName.BUTTON_ACTIVE, newButton === target);
+    discussedButton.classList.toggle(ClassName.BUTTON_ACTIVE, discussedButton === target);
   };
 
   var onPopularButtonClick = window.utils.debounce(function (evt) {
