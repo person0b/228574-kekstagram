@@ -25,16 +25,8 @@
   var picturesData = [];
 
   var sortNewPictures = function () {
-    var newPictures = [];
-
-    while (newPictures.length < NEW_PICTURES_COUNT) {
-      newPictures.push(window.utils.getRandomElement(picturesData));
-      newPictures = newPictures.filter(function (it, i) {
-        return newPictures.indexOf(it) === i;
-      });
-    }
-
-    return newPictures;
+    var copyPictures = picturesData.slice();
+    return window.utils.mixArray(copyPictures).slice(0, NEW_PICTURES_COUNT);
   };
 
   var sortDiscussedPictures = function () {
