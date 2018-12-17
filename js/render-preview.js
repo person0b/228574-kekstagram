@@ -25,12 +25,30 @@
 
   window.renderPreview = function (picturesData) {
     var previewFragment = document.createDocumentFragment();
-
     for (var i = 0; i < picturesData.length; i++) {
       previewFragment.appendChild(createPreview(picturesData[i]));
     }
-
     list.appendChild(previewFragment);
+
+    var images = list.querySelectorAll(Selector.IMAGE);
+    var getCounter = function (length) {
+      var counter = 0;
+      var upCounter = function () {
+        counter++;
+        if (counter === length) {
+          window.sortPreview.onPreviewsLoad();
+        }
+      };
+      return upCounter;
+    };
+    var onImageLoadEvt = getCounter(images.length);
+    var loadImage = function (image) {
+      image.addEventListener('load', onImageLoadEvt);
+      image.addEventListener('error', onImageLoadEvt);
+    };
+    for (var m = 0; m < images.length; m++) {
+      loadImage(images[m]);
+    }
 
     var previews = list.querySelectorAll(Selector.ITEM);
     for (var j = 0; j < picturesData.length; j++) {
