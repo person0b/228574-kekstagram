@@ -31,17 +31,7 @@
     list.appendChild(previewFragment);
 
     var images = list.querySelectorAll(Selector.IMAGE);
-    var getCounter = function (length) {
-      var counter = 0;
-      var upCounter = function () {
-        counter++;
-        if (counter === length) {
-          window.sortPreview.onPreviewsLoad();
-        }
-      };
-      return upCounter;
-    };
-    var onImageLoadEvt = getCounter(images.length);
+    var onImageLoadEvt = window.sortPreview.imageLoadedCheck(images.length);
     var loadImage = function (image) {
       image.addEventListener('load', onImageLoadEvt);
       image.addEventListener('error', onImageLoadEvt);

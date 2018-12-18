@@ -70,8 +70,15 @@
     updatePreview(sortDiscussedPictures());
   });
 
-  var onPreviewsLoad = function () {
-    filters.classList.remove(ClassName.INACTIVE);
+  var imageLoadedCheck = function (length) {
+    var counter = 0;
+    var upCounter = function () {
+      counter++;
+      if (counter === length) {
+        filters.classList.remove(ClassName.INACTIVE);
+      }
+    };
+    return upCounter;
   };
 
   var loadPicturesSuccess = function (data) {
@@ -92,6 +99,6 @@
   window.backend.load(loadPicturesSuccess, loadPicturesError);
 
   window.sortPreview = {
-    onPreviewsLoad: onPreviewsLoad
+    imageLoadedCheck: imageLoadedCheck
   };
 })();
