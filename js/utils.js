@@ -1,19 +1,20 @@
 'use strict';
 
 (function () {
-  var KeyCodes = {
+  var KeyCode = {
     ESC: 27,
     ENTER: 13
   };
-  var ClassNames = {
+  var ClassName = {
     HIDDEN: 'hidden',
     VISUALLY_HIDDEN: 'visually-hidden',
     MODAL_OPEN: 'modal-open'
   };
-  var ModalSelectors = {
+  var ModalSelector = {
     PICTURE: '.big-picture',
     EDITOR: '.img-upload__overlay'
   };
+  var DEBOUNCE_INTERVAL = 500;
 
   var getRandomInt = function (min, max) {
     if (max === undefined) {
@@ -33,13 +34,39 @@
     }
   };
 
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
+  var mixArray = function (arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = arr[j];
+      arr[j] = arr[i];
+      arr[i] = temp;
+    }
+    return arr;
+  };
+
   window.utils = {
-    keyCodes: KeyCodes,
-    classNames: ClassNames,
-    pictureModal: document.querySelector(ModalSelectors.PICTURE),
-    editorModal: document.querySelector(ModalSelectors.EDITOR),
+    keyCode: KeyCode,
+    className: ClassName,
+    pictureModal: document.querySelector(ModalSelector.PICTURE),
+    editorModal: document.querySelector(ModalSelector.EDITOR),
     getRandomInt: getRandomInt,
     getRandomElement: getRandomElement,
-    removeChildren: removeChildren
+    removeChildren: removeChildren,
+    debounce: debounce,
+    mixArray: mixArray
   };
 })();

@@ -1,16 +1,16 @@
 'use strict';
 
 (function () {
-  var Selectors = {
+  var Selector = {
     FORM: '.img-upload__form',
     HASHTAGS_INPUT: '.text__hashtags',
     COMMENT_INPUT: '.text__description'
   };
   var INVALID_COLOR = 'red';
 
-  var form = document.querySelector(Selectors.FORM);
-  var hashtagsInput = form.querySelector(Selectors.HASHTAGS_INPUT);
-  var commentInput = form.querySelector(Selectors.COMMENT_INPUT);
+  var form = document.querySelector(Selector.FORM);
+  var hashtagsInput = form.querySelector(Selector.HASHTAGS_INPUT);
+  var commentInput = form.querySelector(Selector.COMMENT_INPUT);
 
   var onInputInvalid = function (evt) {
     var input = evt.target;

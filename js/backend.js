@@ -7,11 +7,13 @@
     TIMEOUT: 10000
   };
 
-  var ErrorMessages = {
-    LOAD: 'Не удалось загрузить изображения',
+  var ErrorMessage = {
+    LOAD: 'Не получилось загрузить',
+    SAVE: 'Не получилось сохранить',
     ERROR: 'Произошла ошибка соединения',
-    TIMEOUT: 'Запрос не успел выполниться за '
+    TIMEOUT: 'Запрос не успел выполниться за ' + ServerParameter.TIMEOUT + ' мс'
   };
+
 
   var load = function (onLoad, onError) {
     var xhr = new XMLHttpRequest();
@@ -21,14 +23,14 @@
       if (xhr.status === 200) {
         onLoad(xhr.response);
       } else {
-        onError(ErrorMessages.LOAD);
+        onError(ErrorMessage.LOAD);
       }
     });
     xhr.addEventListener('error', function () {
-      onError(ErrorMessages.ERROR);
+      onError(ErrorMessage.ERROR);
     });
     xhr.addEventListener('timeout', function () {
-      onError(ErrorMessages.TIMEOUT + xhr.timeout + 'мс');
+      onError(ErrorMessage.TIMEOUT);
     });
 
     xhr.timeout = ServerParameter.TIMEOUT;
@@ -44,16 +46,17 @@
       if (xhr.status === 200) {
         onLoad();
       } else {
-        onError(ErrorMessages.LOAD);
+        onError(ErrorMessage.LOAD);
       }
     });
     xhr.addEventListener('error', function () {
-      onError(ErrorMessages.ERROR);
+      onError(ErrorMessage.ERROR);
     });
     xhr.addEventListener('timeout', function () {
-      onError(ErrorMessages.TIMEOUT + xhr.timeout + 'мс');
+      onError(ErrorMessage.TIMEOUT);
     });
 
+    xhr.timeout = ServerParameter.TIMEOUT;
     xhr.open('POST', ServerParameter.URL);
     xhr.send(data);
   };

@@ -1,9 +1,9 @@
 'use strict';
 
 (function () {
-  var Selectors = {
+  var Selector = {
     FIELD: '.effect-level',
-    VALUE: '.effect-level__value',
+    LEVEL_INPUT: '.effect-level__value',
     LINE: '.effect-level__line',
     PIN: '.effect-level__pin',
     DEPTH: '.effect-level__depth',
@@ -68,29 +68,29 @@
   var DEFAULT_LEVEL = 100;
 
   var editor = window.utils.editorModal;
-  var buttons = editor.querySelectorAll(Selectors.BUTTON);
-  var slider = editor.querySelector(Selectors.FIELD);
-  var pin = editor.querySelector(Selectors.PIN);
-  var depth = editor.querySelector(Selectors.DEPTH);
-  var line = editor.querySelector(Selectors.LINE);
-  var value = editor.querySelector(Selectors.VALUE);
-  var image = editor.querySelector(Selectors.IMAGE);
+  var buttons = editor.querySelectorAll(Selector.BUTTON);
+  var slider = editor.querySelector(Selector.FIELD);
+  var pin = editor.querySelector(Selector.PIN);
+  var depth = editor.querySelector(Selector.DEPTH);
+  var line = editor.querySelector(Selector.LINE);
+  var inputLevel = editor.querySelector(Selector.LEVEL_INPUT);
+  var image = editor.querySelector(Selector.IMAGE);
 
   var getValue = function (min, max, percent) {
     return ((max - min) / 100 * percent + min).toString();
   };
 
   var setLevel = function (effect, level) {
-    value.value = level;
+    inputLevel.setAttribute('value', level);
     image.style.filter = EFFECTS[effect].getFilter(level);
     pin.style.left = level.toString() + '%';
     depth.style.width = level.toString() + '%';
   };
 
-  var addButtonClickHandler = function (button) {
+  var activateEffect = function (button) {
     var effect = button.value;
 
-    var activateEffect = function () {
+    var onEffectButtonClick = function () {
       for (var effectObj in EFFECTS) {
         if (image.classList.contains(EFFECTS[effectObj].class)) {
           image.classList.remove(EFFECTS[effectObj].class);
@@ -100,19 +100,19 @@
       button.checked = true;
       setLevel(effect, DEFAULT_LEVEL);
       if (EFFECTS[effect].showRange) {
-        slider.classList.remove(window.utils.classNames.HIDDEN);
+        slider.classList.remove(window.utils.className.HIDDEN);
       } else {
-        slider.classList.add(window.utils.classNames.HIDDEN);
+        slider.classList.add(window.utils.className.HIDDEN);
       }
     };
 
-    button.addEventListener('click', activateEffect);
+    button.addEventListener('click', onEffectButtonClick);
   };
 
   var onPinMousedown = function (evt) {
     evt.preventDefault();
 
-    var effect = editor.querySelector(Selectors.CURRENT).value;
+    var effect = editor.querySelector(Selector.CURRENT).value;
 
     var getEffectLevelPercent = function (pinScreenPosition) {
       var lineRect = line.getBoundingClientRect();
@@ -146,13 +146,13 @@
   var reset = function () {
     buttons[0].checked = true;
     setLevel(buttons[0].value, DEFAULT_LEVEL);
-    slider.classList.add(window.utils.classNames.HIDDEN);
+    slider.classList.add(window.utils.className.HIDDEN);
   };
 
   window.effectEvents = {
     buttons: buttons,
     pin: pin,
-    addButtonClickHandler: addButtonClickHandler,
+    activateEffect: activateEffect,
     onPinMousedown: onPinMousedown,
     reset: reset
   };
