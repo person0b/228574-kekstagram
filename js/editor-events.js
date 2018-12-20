@@ -44,6 +44,7 @@
   var open = function () {
     resetValue();
 
+    window.showLoadedImage(uploadButton);
     editor.classList.remove(window.utils.className.HIDDEN);
 
     document.addEventListener('keydown', onEditorEscPress);
@@ -59,6 +60,8 @@
   };
 
   var close = function () {
+    resetValue();
+
     editor.classList.add(window.utils.className.HIDDEN);
     uploadButton.value = null;
 
