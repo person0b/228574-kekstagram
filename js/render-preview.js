@@ -25,9 +25,9 @@
 
   window.renderPreview = function (picturesData) {
     var previewFragment = document.createDocumentFragment();
-    for (var i = 0; i < picturesData.length; i++) {
-      previewFragment.appendChild(createPreview(picturesData[i]));
-    }
+    picturesData.forEach(function (picture) {
+      previewFragment.appendChild(createPreview(picture));
+    });
     list.appendChild(previewFragment);
 
     var images = list.querySelectorAll(Selector.IMAGE);
@@ -36,9 +36,9 @@
       image.addEventListener('load', onImageLoadEvt);
       image.addEventListener('error', onImageLoadEvt);
     };
-    for (var m = 0; m < images.length; m++) {
-      loadImage(images[m]);
-    }
+    images.forEach(function (image) {
+      loadImage(image);
+    });
 
     var previews = list.querySelectorAll(Selector.ITEM);
     for (var j = 0; j < picturesData.length; j++) {
