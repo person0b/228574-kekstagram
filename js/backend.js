@@ -7,6 +7,8 @@
     TIMEOUT: 10000
   };
 
+  var SUCCESS_STATUS_CODE = 200;
+
   var ErrorMessage = {
     LOAD: 'Не получилось загрузить',
     SAVE: 'Не получилось сохранить',
@@ -20,7 +22,7 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === SUCCESS_STATUS_CODE) {
         onLoad(xhr.response);
       } else {
         onError(ErrorMessage.LOAD);
@@ -43,7 +45,7 @@
     xhr.responseType = 'json';
 
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === SUCCESS_STATUS_CODE) {
         onLoad();
       } else {
         onError(ErrorMessage.LOAD);

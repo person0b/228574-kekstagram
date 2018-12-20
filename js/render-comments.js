@@ -11,7 +11,7 @@
     AVATAR: 'social__picture'
   };
 
-  var renderComment = function (commentData) {
+  var createComment = function (commentData) {
     var comment = document.createElement('li');
     var avatar = document.createElement('img');
     var text = document.createElement('p');
@@ -33,15 +33,13 @@
     return comment;
   };
 
-  var createCommentsFragment = function (commentsData, commentsCount) {
+  window.renderComments = function (commentsData, commentsCount) {
     var commentsFragment = document.createDocumentFragment();
 
     for (var i = 0; i < commentsCount; i++) {
-      commentsFragment.appendChild(renderComment(commentsData[i]));
+      commentsFragment.appendChild(createComment(commentsData[i]));
     }
 
     return commentsFragment;
   };
-
-  window.renderComments = createCommentsFragment;
 })();
