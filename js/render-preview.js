@@ -41,8 +41,8 @@
     });
 
     var previews = list.querySelectorAll(Selector.ITEM);
-    for (var j = 0; j < picturesData.length; j++) {
-      window.pictureEvents.open(previews[j], picturesData[j]);
+    for (var i = 0; i < picturesData.length; i++) {
+      window.pictureEvents.pictureOpen(previews[i], picturesData[i]);
     }
   };
 })();

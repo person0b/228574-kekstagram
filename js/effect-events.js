@@ -67,10 +67,8 @@
   };
   var DEFAULT_LEVEL = 100;
 
-  var editor = window.utils.editorModal;
-  var buttons = editor.querySelectorAll(Selector.BUTTON);
+  var editor = window.utils.EDITOR_MODAL;
   var slider = editor.querySelector(Selector.FIELD);
-  var pin = editor.querySelector(Selector.PIN);
   var depth = editor.querySelector(Selector.DEPTH);
   var line = editor.querySelector(Selector.LINE);
   var inputLevel = editor.querySelector(Selector.LEVEL_INPUT);
@@ -83,77 +81,75 @@
   var setLevel = function (effect, level) {
     inputLevel.setAttribute('value', level);
     image.style.filter = EFFECTS[effect].getFilter(level);
-    pin.style.left = level.toString() + '%';
+    window.effectEvents.pin.style.left = level.toString() + '%';
     depth.style.width = level.toString() + '%';
   };
 
-  var activateEffect = function (button) {
-    var effect = button.value;
-
-    var onEffectButtonClick = function () {
-      for (var effectObj in EFFECTS) {
-        if (image.classList.contains(EFFECTS[effectObj].class)) {
-          image.classList.remove(EFFECTS[effectObj].class);
-        }
-      }
-      image.classList.add(EFFECTS[effect].class);
-      button.checked = true;
-      setLevel(effect, DEFAULT_LEVEL);
-      if (EFFECTS[effect].showRange) {
-        slider.classList.remove(window.utils.className.HIDDEN);
-      } else {
-        slider.classList.add(window.utils.className.HIDDEN);
-      }
-    };
-
-    button.addEventListener('click', onEffectButtonClick);
-  };
-
-  var onPinMousedown = function (evt) {
-    evt.preventDefault();
-
-    var effect = editor.querySelector(Selector.CURRENT).value;
-
-    var getEffectLevelPercent = function (pinScreenPosition) {
-      var lineRect = line.getBoundingClientRect();
-      var lineWidth = lineRect.width;
-      var pinPosition = pinScreenPosition - lineRect.left;
-      var percent = Math.round((pinPosition / lineWidth) * 100);
-      return Math.min(Math.max(percent, 0), 100);
-    };
-
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var currentPercent = getEffectLevelPercent(moveEvt.clientX);
-      setLevel(effect, currentPercent);
-    };
-
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-
-      var currentPercent = getEffectLevelPercent(upEvt.clientX);
-      setLevel(effect, currentPercent);
-
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    };
-
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  };
-
-  var reset = function () {
-    buttons[0].checked = true;
-    setLevel(buttons[0].value, DEFAULT_LEVEL);
-    slider.classList.add(window.utils.className.HIDDEN);
-  };
+  var currentEffect;
 
   window.effectEvents = {
-    buttons: buttons,
-    pin: pin,
-    activateEffect: activateEffect,
-    onPinMousedown: onPinMousedown,
-    reset: reset
+    buttons: editor.querySelectorAll(Selector.BUTTON),
+    pin: editor.querySelector(Selector.PIN),
+
+    activateEffect: function (button) {
+      var effect = button.value;
+
+      var onEffectButtonClick = function () {
+        if (currentEffect) {
+          image.classList.remove(EFFECTS[currentEffect].class);
+        }
+        currentEffect = effect;
+        image.classList.add(EFFECTS[effect].class);
+        button.checked = true;
+        setLevel(effect, DEFAULT_LEVEL);
+        if (EFFECTS[effect].showRange) {
+          slider.classList.remove(window.utils.ClassName.HIDDEN);
+        } else {
+          slider.classList.add(window.utils.ClassName.HIDDEN);
+        }
+      };
+
+      button.addEventListener('click', onEffectButtonClick);
+    },
+
+    onPinMousedown: function (evt) {
+      evt.preventDefault();
+
+      var effect = editor.querySelector(Selector.CURRENT).value;
+
+      var getEffectLevelPercent = function (pinScreenPosition) {
+        var lineRect = line.getBoundingClientRect();
+        var lineWidth = lineRect.width;
+        var pinPosition = pinScreenPosition - lineRect.left;
+        var percent = Math.round((pinPosition / lineWidth) * 100);
+        return Math.min(Math.max(percent, 0), 100);
+      };
+
+      var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
+
+        var currentPercent = getEffectLevelPercent(moveEvt.clientX);
+        setLevel(effect, currentPercent);
+      };
+
+      var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
+
+        var currentPercent = getEffectLevelPercent(upEvt.clientX);
+        setLevel(effect, currentPercent);
+
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      };
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    },
+
+    reset: function () {
+      window.effectEvents.buttons[0].checked = true;
+      setLevel(window.effectEvents.buttons[0].value, DEFAULT_LEVEL);
+      slider.classList.add(window.utils.ClassName.HIDDEN);
+    }
   };
 })();

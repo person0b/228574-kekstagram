@@ -17,10 +17,10 @@
   var NEW_PICTURES_COUNT = 10;
 
   var listPreview = document.querySelector(Selector.LIST_PREVIEW);
-  var filters = document.querySelector(Selector.FILTERS);
-  var popularButton = filters.querySelector(Selector.POPULAR);
-  var newButton = filters.querySelector(Selector.NEW);
-  var discussedButton = filters.querySelector(Selector.DISCUSSED);
+  var listFilters = document.querySelector(Selector.FILTERS);
+  var popularButton = listFilters.querySelector(Selector.POPULAR);
+  var newButton = listFilters.querySelector(Selector.NEW);
+  var discussedButton = listFilters.querySelector(Selector.DISCUSSED);
 
   var picturesData = [];
 
@@ -70,15 +70,17 @@
     updatePreview(sortDiscussedPictures());
   });
 
-  var imageLoadedCheck = function (length) {
-    var counter = 0;
-    var upCounter = function () {
-      counter++;
-      if (counter === length) {
-        filters.classList.remove(ClassName.INACTIVE);
-      }
-    };
-    return upCounter;
+  window.sortPreview = {
+    imageLoadedCheck: function (length) {
+      var counter = 0;
+      var upCounter = function () {
+        counter++;
+        if (counter === length) {
+          listFilters.classList.remove(ClassName.INACTIVE);
+        }
+      };
+      return upCounter;
+    }
   };
 
   var loadPicturesSuccess = function (data) {
@@ -97,8 +99,4 @@
   };
 
   window.backend.load(loadPicturesSuccess, loadPicturesError);
-
-  window.sortPreview = {
-    imageLoadedCheck: imageLoadedCheck
-  };
 })();

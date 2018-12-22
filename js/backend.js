@@ -17,54 +17,53 @@
   };
 
 
-  var load = function (onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.addEventListener('load', function () {
-      if (xhr.status === SUCCESS_STATUS_CODE) {
-        onLoad(xhr.response);
-      } else {
-        onError(ErrorMessage.LOAD);
-      }
-    });
-    xhr.addEventListener('error', function () {
-      onError(ErrorMessage.ERROR);
-    });
-    xhr.addEventListener('timeout', function () {
-      onError(ErrorMessage.TIMEOUT);
-    });
-
-    xhr.timeout = ServerParameter.TIMEOUT;
-    xhr.open('GET', ServerParameter.URL + ServerParameter.DATA);
-    xhr.send();
-  };
-
-  var save = function (data, onLoad, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = 'json';
-
-    xhr.addEventListener('load', function () {
-      if (xhr.status === SUCCESS_STATUS_CODE) {
-        onLoad();
-      } else {
-        onError(ErrorMessage.LOAD);
-      }
-    });
-    xhr.addEventListener('error', function () {
-      onError(ErrorMessage.ERROR);
-    });
-    xhr.addEventListener('timeout', function () {
-      onError(ErrorMessage.TIMEOUT);
-    });
-
-    xhr.timeout = ServerParameter.TIMEOUT;
-    xhr.open('POST', ServerParameter.URL);
-    xhr.send(data);
-  };
-
   window.backend = {
-    load: load,
-    save: save
+    load: function (onLoad, onError) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        if (xhr.status !== SUCCESS_STATUS_CODE) {
+          onError(ErrorMessage.LOAD);
+          return;
+        }
+        onLoad(xhr.response);
+        return;
+      });
+      xhr.addEventListener('error', function () {
+        onError(ErrorMessage.ERROR);
+      });
+      xhr.addEventListener('timeout', function () {
+        onError(ErrorMessage.TIMEOUT);
+      });
+
+      xhr.timeout = ServerParameter.TIMEOUT;
+      xhr.open('GET', ServerParameter.URL + ServerParameter.DATA);
+      xhr.send();
+    },
+
+    save: function (data, onLoad, onError) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        if (xhr.status !== SUCCESS_STATUS_CODE) {
+          onError(ErrorMessage.LOAD);
+          return;
+        }
+        onLoad();
+        return;
+      });
+      xhr.addEventListener('error', function () {
+        onError(ErrorMessage.ERROR);
+      });
+      xhr.addEventListener('timeout', function () {
+        onError(ErrorMessage.TIMEOUT);
+      });
+
+      xhr.timeout = ServerParameter.TIMEOUT;
+      xhr.open('POST', ServerParameter.URL);
+      xhr.send(data);
+    }
   };
 })();

@@ -14,10 +14,8 @@
     STEP: 25
   };
 
-  var editor = window.utils.editorModal;
+  var editor = window.utils.EDITOR_MODAL;
   var inputScale = editor.querySelector(Selector.INPUT);
-  var smallerButton = editor.querySelector(Selector.SMALLER);
-  var biggerButton = editor.querySelector(Selector.BIGGER);
   var image = editor.querySelector(Selector.IMAGE);
 
   var setScale = function (percent) {
@@ -25,28 +23,24 @@
     image.style.transform = 'scale(' + (percent / 100).toString() + ')';
   };
 
-  var onBiggerButtonClick = function () {
-    var currentPercent = parseInt(inputScale.value, 10);
-    currentPercent = Math.min(Parameter.MAX, currentPercent + Parameter.STEP);
-    setScale(currentPercent);
-  };
-
-  var onSmallerButtonClick = function () {
-    var currentPercent = parseInt(inputScale.value, 10);
-    currentPercent = Math.max(Parameter.MIN, currentPercent - Parameter.STEP);
-    setScale(currentPercent);
-  };
-
-  var reset = function () {
-    setScale(Parameter.MAX);
-  };
-
   window.scaleEvents = {
-    smallerButton: smallerButton,
-    biggerButton: biggerButton,
-    onBiggerButtonClick: onBiggerButtonClick,
-    onSmallerButtonClick: onSmallerButtonClick,
-    setScale: setScale,
-    reset: reset
+    smallerButton: editor.querySelector(Selector.SMALLER),
+    biggerButton: editor.querySelector(Selector.BIGGER),
+
+    onBiggerButtonClick: function () {
+      var currentPercent = parseInt(inputScale.value, 10);
+      currentPercent = Math.min(Parameter.MAX, currentPercent + Parameter.STEP);
+      setScale(currentPercent);
+    },
+
+    onSmallerButtonClick: function () {
+      var currentPercent = parseInt(inputScale.value, 10);
+      currentPercent = Math.max(Parameter.MIN, currentPercent - Parameter.STEP);
+      setScale(currentPercent);
+    },
+
+    reset: function () {
+      setScale(Parameter.MAX);
+    }
   };
 })();

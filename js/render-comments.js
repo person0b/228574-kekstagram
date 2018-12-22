@@ -5,7 +5,6 @@
     AVATAR_SIZE: 35,
   };
   var Selector = {
-    LIST: '.social__comments',
     ITEM: 'social__comment',
     TEXT: 'social__text',
     AVATAR: 'social__picture'
