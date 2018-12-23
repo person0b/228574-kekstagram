@@ -24,6 +24,11 @@
     var string = target.value;
     var hashtags = string.split(Special.SEPARATOR);
 
+    if (hashtags.length === 0) {
+      target.setCustomValidity('');
+      return;
+    }
+
     if (hashtags.length > Parameter.MAX_COUNT) {
       target.setCustomValidity(AlertString.COUNT);
       return;

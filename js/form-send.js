@@ -20,11 +20,11 @@
   var onFormSubmit = function (evt) {
     var saveSuccess = function () {
       window.editorEvents.close();
-      window.renderMessages.create(window.renderMessages.types.SUCCESS);
+      window.renderMessages.createMessage(window.renderMessages.MessageType.SUCCESS);
     };
     var saveError = function () {
       window.editorEvents.close();
-      window.renderMessages.create(window.renderMessages.types.ERROR);
+      window.renderMessages.createMessage(window.renderMessages.MessageType.ERROR);
     };
 
     window.backend.save(new FormData(form), saveSuccess, saveError);
