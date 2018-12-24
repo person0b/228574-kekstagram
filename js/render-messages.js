@@ -47,8 +47,8 @@
         closeMessage();
       };
 
-      var onMessageEscPress = function () {
-        if (window.keyboard.isEscPressed) {
+      var onMessageEscPress = function (evt) {
+        if (window.keyboard.isEscPressed(evt)) {
           closeMessage();
         }
       };

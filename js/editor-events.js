@@ -4,8 +4,6 @@
   var Selector = {
     UPLOAD_BUTTON: '#upload-file',
     CLOSE_BUTTON: '.img-upload__cancel',
-    HASHTAGS_INPUT: '.text__hashtags',
-    COMMENTS_INPUT: '.text__description'
   };
 
   var editor = window.utils.EDITOR_MODAL;
@@ -18,18 +16,17 @@
   var effectButtons = window.effectEvents.buttons;
   var effectPin = window.effectEvents.pin;
 
-  var hashtagsInput = editor.querySelector(Selector.HASHTAGS_INPUT);
-  var commentsInput = editor.querySelector(Selector.COMMENTS_INPUT);
+  var hashtagsInput = window.formEvents.hashtagsInput;
+  var commentInput = window.formEvents.commentInput;
 
-
-  var onEditorEscPress = function () {
-    if (window.keyboard.isEscPressed && document.activeElement !== hashtagsInput && document.activeElement !== commentsInput) {
+  var onEditorEscPress = function (evt) {
+    if (window.keyboard.isEscPressed(evt) && document.activeElement !== hashtagsInput && document.activeElement !== commentInput) {
       closeEditor();
     }
   };
 
-  var onCloseButtonEnterPress = function () {
-    if (window.keyboard.isEnterPressed) {
+  var onCloseButtonEnterPress = function (evt) {
+    if (window.keyboard.isEnterPressed(evt)) {
       closeEditor();
     }
   };
@@ -37,9 +34,8 @@
   var resetValue = function () {
     window.scaleEvents.reset();
     window.effectEvents.reset();
-    hashtagsInput.value = null;
-    commentsInput.value = null;
     window.loadedPreview.reset();
+    window.formEvents.inputReset();
   };
 
   var openEditor = function () {
@@ -57,7 +53,7 @@
     effectButtons.forEach(function (button) {
       window.effectEvents.activateEffect(button);
     });
-    hashtagsInput.addEventListener('input', window.hashtagsValidity);
+    window.formEvents.addHandlers();
   };
 
   var closeEditor = function () {
@@ -72,7 +68,7 @@
     scaleBiggerButton.removeEventListener('click', window.scaleEvents.onBiggerButtonClick);
     scaleSmallerButton.removeEventListener('click', window.scaleEvents.onSmallerButtonClick);
     effectPin.removeEventListener('mousedown', window.effectEvents.onPinMousedown);
-    hashtagsInput.removeEventListener('input', window.hashtagsValidity);
+    window.formEvents.removeHandlers();
   };
 
   uploadButton.addEventListener('change', openEditor);

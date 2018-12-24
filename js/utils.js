@@ -16,18 +16,6 @@
     PICTURE_MODAL: document.querySelector(ModalSelector.PICTURE),
     EDITOR_MODAL: document.querySelector(ModalSelector.EDITOR),
 
-    getRandomInt: function (min, max) {
-      if (max === undefined) {
-        max = min;
-        min = 0;
-      }
-      return Math.floor(Math.random() * (max - min)) + min;
-    },
-
-    getRandomElement: function (list) {
-      return list[window.utils.getRandomInt(list.length)];
-    },
-
     removeChildren: function (element) {
       while (element.lastChild) {
         element.removeChild(element.lastChild);
@@ -49,13 +37,9 @@
     },
 
     mixArray: function (arr) {
-      for (var i = arr.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = arr[j];
-        arr[j] = arr[i];
-        arr[i] = temp;
-      }
-      return arr;
+      return arr.sort(function () {
+        return 0.5 - Math.random();
+      });
     }
   };
 })();

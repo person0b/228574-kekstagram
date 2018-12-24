@@ -19,12 +19,12 @@
     DUPLICATE: 'Один и тот же хэш-тег не может быть использован дважды, теги нечувствительны к регистру'
   };
 
-  window.hashtagsValidity = function (evt) {
+  window.onHashtagsValidity = function (evt) {
     var target = evt.target;
     var string = target.value;
     var hashtags = string.split(Special.SEPARATOR);
 
-    if (hashtags.length === 0) {
+    if (string.length === 0) {
       target.setCustomValidity('');
       return;
     }
@@ -37,6 +37,10 @@
     for (var i = 0; i < hashtags.length; i++) {
       if (!hashtags[i].startsWith(Special.START_SYMBOL)) {
         target.setCustomValidity(AlertString.NO_HASH);
+        return;
+      }
+      if (hashtags[i].lastIndexOf(Special.START_SYMBOL) > 0) {
+        target.setCustomValidity(AlertString.SPLIT);
         return;
       }
       if (hashtags[i].length === 1) {
