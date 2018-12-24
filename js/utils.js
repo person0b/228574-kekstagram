@@ -16,18 +16,6 @@
     PICTURE_MODAL: document.querySelector(ModalSelector.PICTURE),
     EDITOR_MODAL: document.querySelector(ModalSelector.EDITOR),
 
-    getRandomInt: function (min, max) {
-      if (max === undefined) {
-        max = min;
-        min = 0;
-      }
-      return Math.floor(Math.random() * (max - min)) + min;
-    },
-
-    getRandomElement: function (list) {
-      return list[window.utils.getRandomInt(list.length)];
-    },
-
     removeChildren: function (element) {
       while (element.lastChild) {
         element.removeChild(element.lastChild);
