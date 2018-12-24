@@ -16,52 +16,43 @@
     TIMEOUT: 'Запрос не успел выполниться за ' + ServerParameter.TIMEOUT + ' мс'
   };
 
+  var getXhrObject = function () {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+    xhr.timeout = ServerParameter.TIMEOUT;
+    return xhr;
+  };
+
+  var setXhrEvents = function (request, cbLoad, cbError) {
+    request.addEventListener('load', function () {
+      if (request.status !== SUCCESS_STATUS_CODE) {
+        cbError(ErrorMessage.LOAD);
+        return;
+      }
+      cbLoad(request.response);
+      return;
+    });
+    request.addEventListener('error', function () {
+      cbError(ErrorMessage.ERROR);
+    });
+    request.addEventListener('timeout', function () {
+      cbError(ErrorMessage.TIMEOUT);
+    });
+  };
 
   window.backend = {
     load: function (onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
+      var xhr = getXhrObject();
+      setXhrEvents(xhr, onLoad, onError);
 
-      xhr.addEventListener('load', function () {
-        if (xhr.status !== SUCCESS_STATUS_CODE) {
-          onError(ErrorMessage.LOAD);
-          return;
-        }
-        onLoad(xhr.response);
-        return;
-      });
-      xhr.addEventListener('error', function () {
-        onError(ErrorMessage.ERROR);
-      });
-      xhr.addEventListener('timeout', function () {
-        onError(ErrorMessage.TIMEOUT);
-      });
-
-      xhr.timeout = ServerParameter.TIMEOUT;
       xhr.open('GET', ServerParameter.URL + ServerParameter.DATA);
       xhr.send();
     },
 
     save: function (data, onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
+      var xhr = getXhrObject();
+      setXhrEvents(xhr, onLoad, onError);
 
-      xhr.addEventListener('load', function () {
-        if (xhr.status !== SUCCESS_STATUS_CODE) {
-          onError(ErrorMessage.LOAD);
-          return;
-        }
-        onLoad();
-        return;
-      });
-      xhr.addEventListener('error', function () {
-        onError(ErrorMessage.ERROR);
-      });
-      xhr.addEventListener('timeout', function () {
-        onError(ErrorMessage.TIMEOUT);
-      });
-
-      xhr.timeout = ServerParameter.TIMEOUT;
       xhr.open('POST', ServerParameter.URL);
       xhr.send(data);
     }
