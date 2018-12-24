@@ -16,8 +16,8 @@
   var effectButtons = window.effectEvents.buttons;
   var effectPin = window.effectEvents.pin;
 
-  var hashtagsInput = window.formSend.hashtagsInput;
-  var commentInput = window.formSend.commentInput;
+  var hashtagsInput = window.formEvents.hashtagsInput;
+  var commentInput = window.formEvents.commentInput;
 
   var onEditorEscPress = function (evt) {
     if (window.keyboard.isEscPressed(evt) && document.activeElement !== hashtagsInput && document.activeElement !== commentInput) {
@@ -35,7 +35,7 @@
     window.scaleEvents.reset();
     window.effectEvents.reset();
     window.loadedPreview.reset();
-    window.formSend.inputReset();
+    window.formEvents.inputReset();
   };
 
   var openEditor = function () {
@@ -53,7 +53,7 @@
     effectButtons.forEach(function (button) {
       window.effectEvents.activateEffect(button);
     });
-    window.formSend.addFormEvents();
+    window.formEvents.addFormEvents();
   };
 
   var closeEditor = function () {
@@ -68,7 +68,7 @@
     scaleBiggerButton.removeEventListener('click', window.scaleEvents.onBiggerButtonClick);
     scaleSmallerButton.removeEventListener('click', window.scaleEvents.onSmallerButtonClick);
     effectPin.removeEventListener('mousedown', window.effectEvents.onPinMousedown);
-    window.formSend.removeFormEvents();
+    window.formEvents.removeFormEvents();
   };
 
   uploadButton.addEventListener('change', openEditor);

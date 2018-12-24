@@ -32,7 +32,7 @@
     evt.preventDefault();
   };
 
-  window.formSend = {
+  window.formEvents = {
     hashtagsInput: hashtagsInput,
     commentInput: commentInput,
     addFormEvents: function () {
