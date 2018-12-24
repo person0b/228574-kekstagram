@@ -19,7 +19,7 @@
     DUPLICATE: 'Один и тот же хэш-тег не может быть использован дважды, теги нечувствительны к регистру'
   };
 
-  window.hashtagsValidity = function (evt) {
+  window.onHashtagsValidity = function (evt) {
     var target = evt.target;
     var string = target.value;
     var hashtags = string.split(Special.SEPARATOR);

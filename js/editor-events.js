@@ -53,7 +53,7 @@
     effectButtons.forEach(function (button) {
       window.effectEvents.activateEffect(button);
     });
-    window.formEvents.addFormEvents();
+    window.formEvents.addHandlers();
   };
 
   var closeEditor = function () {
@@ -68,7 +68,7 @@
     scaleBiggerButton.removeEventListener('click', window.scaleEvents.onBiggerButtonClick);
     scaleSmallerButton.removeEventListener('click', window.scaleEvents.onSmallerButtonClick);
     effectPin.removeEventListener('mousedown', window.effectEvents.onPinMousedown);
-    window.formEvents.removeFormEvents();
+    window.formEvents.removeHandlers();
   };
 
   uploadButton.addEventListener('change', openEditor);

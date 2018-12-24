@@ -35,14 +35,14 @@
   window.formEvents = {
     hashtagsInput: hashtagsInput,
     commentInput: commentInput,
-    addFormEvents: function () {
-      hashtagsInput.addEventListener('input', window.hashtagsValidity);
+    addHandlers: function () {
+      hashtagsInput.addEventListener('input', window.onHashtagsValidity);
       hashtagsInput.addEventListener('invalid', onInputInvalid);
       commentInput.addEventListener('invalid', onInputInvalid);
       form.addEventListener('submit', onFormSubmit);
     },
-    removeFormEvents: function () {
-      hashtagsInput.removeEventListener('input', window.hashtagsValidity);
+    removeHandlers: function () {
+      hashtagsInput.removeEventListener('input', window.onHashtagsValidity);
       hashtagsInput.removeEventListener('invalid', onInputInvalid);
       commentInput.removeEventListener('invalid', onInputInvalid);
       form.removeEventListener('submit', onFormSubmit);
