@@ -22,14 +22,14 @@
   var commentsInput = editor.querySelector(Selector.COMMENTS_INPUT);
 
 
-  var onEditorEscPress = function () {
-    if (window.keyboard.isEscPressed && document.activeElement !== hashtagsInput && document.activeElement !== commentsInput) {
+  var onEditorEscPress = function (evt) {
+    if (window.keyboard.isEscPressed(evt) && document.activeElement !== hashtagsInput && document.activeElement !== commentsInput) {
       closeEditor();
     }
   };
 
-  var onCloseButtonEnterPress = function () {
-    if (window.keyboard.isEnterPressed) {
+  var onCloseButtonEnterPress = function (evt) {
+    if (window.keyboard.isEnterPressed(evt)) {
       closeEditor();
     }
   };

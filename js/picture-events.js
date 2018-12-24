@@ -62,8 +62,8 @@
     document.removeEventListener('keydown', onPictureEscPress);
   };
 
-  var onPictureEscPress = function () {
-    if (window.keyboard.isEscPressed) {
+  var onPictureEscPress = function (evt) {
+    if (window.keyboard.isEscPressed(evt)) {
       pictureClose();
     }
   };
